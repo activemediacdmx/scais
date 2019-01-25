@@ -21,12 +21,17 @@
                 position: relative;
                 z-index: 5;
                 text-align: right;
-                padding-bottom: 20px;
-                padding-right: 20px;
+                padding-bottom: 30px;
                 color:#478be9;
+                float: right;
+            }
+            .date_audit{
+                position:relative;
+                top:20px;
+                float: right;
+                top: -0px;
             }
             </style>
-
 
 
             	<div class="m-portlet  m-portlet--full-height ">
@@ -42,7 +47,9 @@
                         for($i=0;$i < count($auditoria) ;$i++){
                           $fecha = substr($auditoria[$i]->fecha_alta, 0, 10);
                           if($fecha_change != $fecha){
-                            echo '<div class="title_audit">'.$fecha.'</div>';
+                            echo '
+                            <div class="col-xl-3 date_audit"><input type="text" readonly class="form-control date-picker" id="auditar_fecha_alta" name="fecha_alta" placeholder="Fecha a auditar" value=""></div>
+                            <div class="title_audit">'.$fecha.'</div><div class="clearfix"></div>';
                           }
                         ?>
 

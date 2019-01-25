@@ -43,6 +43,33 @@ $('body').on('focus','.date-picker',function(){
 					 }).inputmask('yyyy-mm-dd');
 });
 
+//////////////////////////////////////////////AQUI ME QUEDE
+
+$error
+
+$("body").on("change", "#auditar_fecha_alta", function(){
+		$.ajax({
+			headers: {
+						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+			url: url_app + 'login/getAuditoriaUserDate',
+			type: 'POST',
+			data: $("#editar_perfil").serialize(),
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#name_top').html(resp_success['new_name']);
+					alerta('Anuncio!', resp_success['mensaje']);
+				}else{
+					alerta('Alerta!', resp_success['mensaje']);
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-02');}
+		});
+
+});
+
+
 $('body').on('focus','.date-time-picker',function(){
 	$(this).datetimepicker({
 						 language: "es",

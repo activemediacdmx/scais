@@ -37,13 +37,15 @@ class Viewauditoria extends Model
   }
 
 
-  static function descriptivo($id_usuario){
+  static function descriptivo($id_usuario, $date = null){
 
+    $facha = ($date == null)?date('Y-m-d'):$date;
     $out = DB::table('fw_auditoria as fwa')
               ->join('fw_usuarios as fwu','fwa.user_alta','=','fwu.id_usuario')
               ->join('fw_metodos as fwm','fwa.id_metodo','=','fwm.id_metodo')
               ->select('fwa.id_auditoria', 'fwu.id_usuario','fwu.usuario', 'fwm.id_metodo', 'fwa.fecha_alta', 'fwm.descripcion')
               ->where('fwu.id_usuario', '=', $id_usuario)
+              ->where('fwa.fecha_alta', 'LIKE', $facha.'%')
               ->orderBy('fwa.id_auditoria', 'DESC')
               ->get();
     return $out;

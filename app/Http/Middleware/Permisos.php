@@ -16,8 +16,9 @@ class Permisos
     {
 
           if(!isset($_SESSION['token'])){
-              return redirect()->action('Login@index');
-              exit();
+            return redirect()->intended(env('URL_APP').'/login');
+            //return redirect()->action('Login@index');
+            exit();
           }
 
           if((isset($_SESSION['token']))&&(in_array($rol,$_SESSION['permisos']))&&($_SESSION['tyc'] != 'SI')){

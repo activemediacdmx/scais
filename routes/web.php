@@ -127,6 +127,7 @@ Route::group(['prefix' => 'login'], function(){
         Route::get('/auditoria', 'Login@auditoria');
         Route::post('/auditoria_get', 'Login@auditoria_get');
         Route::get('/modal_auditoria/{id_usuario}', 'Login@modal_auditoria');
+        Route::post('/getAuditoriaUserDate/{id_usuario}/{date}', 'Login@getAuditoriaUserDate');
 });
 
 Route::get('/', 'Site@index');
