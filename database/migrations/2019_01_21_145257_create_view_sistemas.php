@@ -13,7 +13,7 @@ class CreateViewSistemas extends Migration
      */
     public function up()
     {
-        DB::statement("CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `framedev`.`view_sistemas` AS select `sistemas`.`id_sistema` AS `id_sistema`,`sistemas`.`nombre` AS `nombre`,`sistemas`.`nombre_largo` AS `nombre_largo`,`sistemas`.`descripcion` AS `descripcion` from `sistemas` where (`sistemas`.`id_sistema` <> 1);");
+        DB::statement("CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `view_sistemas` AS select `sistemas`.`id_sistema` AS `id_sistema`,`sistemas`.`nombre` AS `nombre`,`sistemas`.`nombre_largo` AS `nombre_largo`,`sistemas`.`descripcion` AS `descripcion` from `sistemas` where (`sistemas`.`id_sistema` <> 1);");
     }
 
     /**

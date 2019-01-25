@@ -9,12 +9,9 @@ $("#breadcrumb-title").append(' / Análisis de cambios');
 						<tr>
 								<th>ID</th>
 								<th>Sistema</th>
-								<th>Controller</th>
-								<th>Metodo</th>
                 <th>Permiso</th>
                 <th>ipv4</th>
                 <th>URL</th>
-                <th>method</th>
                 <th>token</th>
                 <th>usuario</th>
                 <th>id</th>
@@ -51,7 +48,7 @@ function strtrunc(str, max, add) {
             },
 						"columnDefs": [
 							{
-								"targets": 8,
+								"targets": 5,
 		            "searchable":true,
 		            "visible":true,
 		            "render": function (status) {

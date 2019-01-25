@@ -17,19 +17,16 @@ class Viewauditoria extends Model
     $audit = new Viewauditoria();
     $dataTable = new DT(
       $audit,
-      ['id_auditoria', 'id_sistema', 'controlador', 'metodo', 'permiso', 'ip', 'url', 'method', 'token_session', 'usuario', 'id_usuario', 'fecha_alta']
+      ['id_auditoria', 'id_sistema', 'permiso', 'ip', 'url', 'token_session', 'usuario', 'id_usuario', 'fecha_alta']
     );
 
     $dataTable->setFormatRowFunction(function ($audit) {
       return [
         $audit->id_auditoria ,
         $audit->id_sistema ,
-        $audit->controlador ,
-        $audit->metodo ,
         $audit->permiso ,
         $audit->ip ,
         $audit->url ,
-        $audit->method ,
         $audit->token_session ,
         $audit->usuario ,
         $audit->id_usuario ,
