@@ -43,26 +43,28 @@ $('body').on('focus','.date-picker',function(){
 					 }).inputmask('yyyy-mm-dd');
 });
 
-//////////////////////////////////////////////AQUI ME QUEDE
-
-$error
 
 $("body").on("change", "#auditar_fecha_alta", function(){
+	  fecha = $(this).val();
+		id_usuario = $(this).attr('data-function');
 		$.ajax({
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'login/getAuditoriaUserDate',
+			url: url_app + 'login/getAuditoriaUserDate/' + id_usuario + '/' + fecha,
 			type: 'POST',
-			data: $("#editar_perfil").serialize(),
 			dataType: 'json',
+			beforeSend: function() {
+					$("#register_logger_audit").html('<img id="preload_gear_audit" src="img/gears.svg">');
+			},
 			success: function(resp_success){
-				if (resp_success['resp'] == true) {
-					$('#name_top').html(resp_success['new_name']);
-					alerta('Anuncio!', resp_success['mensaje']);
-				}else{
-					alerta('Alerta!', resp_success['mensaje']);
-				}
+				  $("#register_logger_audit").html('');
+					$.each(resp_success, function(a,b) {
+							date = jQuery.trim(b.fecha_alta).substring(16, 11);
+							$('.title_audit').html(fecha);
+							$('#audit_count').html(a);
+						  $('#register_logger_audit').append('<div class="m-timeline-2__item"><span class="m-timeline-2__item-time">' +	date + '</span><div class="m-timeline-2__item-cricle"><i class="fa fa-genderless m--font-danger"></i></div><div class="m-timeline-2__item-text  m--padding-top-5">' + b.descripcion + '<br><br></div></div>' );
+					});
 			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-02');}
 		});

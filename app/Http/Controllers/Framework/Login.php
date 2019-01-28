@@ -70,12 +70,13 @@ class Login extends Controller
     public function modal_auditoria($id_usuario) {
 
       $auditoria = Viewauditoria::descriptivo($id_usuario);
-      return view('modales/login/modal_auditoria')->with('auditoria', $auditoria);
+      return view('modales/login/modal_auditoria')->with('auditoria', $auditoria)->with('id_usuario', $id_usuario);
 
     }
-    
+
     public function getAuditoriaUserDate($id_usuario,$date) {
         $auditoria = Viewauditoria::descriptivo($id_usuario, $date);
+        print $auditoria;
     }
 
     public function loginlogger() {
