@@ -20,7 +20,10 @@ class Roles extends Controller
   }
   public function index(){require URL_TEMPLATE.'404.php';}
 
-  public function establecer_permiso($role,$metodo,$estado){ print json_encode(ModelRoles::setear_permiso($role,$metodo,$estado));}
+  public function establecer_permiso($id_rol,$metodo,$estado){
+    ModelRoles::changeToken($id_rol);
+    print json_encode(ModelRoles::setear_permiso($id_rol,$metodo,$estado));
+  }
 
   public function establecer_acceso($id_rol,$access,$estado){print json_encode(ModelRoles::setear_acceso($id_rol,$access,$estado,'fw_roles','fw_roles'));}
 

@@ -27,6 +27,7 @@ class CreateFwRolesTable extends Migration
             $table->unsignedInteger('cat_tiporol')->nullable()->default(null);
             $table->unsignedInteger('id_sistema')->nullable()->default(null);
             $table->string('descripcion')->nullable()->default(null);
+            $table->string('token')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
             $table->integer('user_mod')->nullable()->default(null);
             $table->dateTime('fecha_alta')->nullable()->default(null);

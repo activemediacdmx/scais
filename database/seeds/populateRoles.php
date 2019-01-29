@@ -17,6 +17,7 @@ class populateRoles extends Seeder
       'cat_tiporol'=>6,
       'id_sistema'=>1,
       'descripcion'=>'Desarrollador',
+      'token'=>'9iILD7Q7FGfwj9QhOb7boMPbgiuQV7Kt',
       'user_alta'=>0,
       'user_mod'=>0,
       'fecha_alta'=>'2016-11-16 14:41:31',

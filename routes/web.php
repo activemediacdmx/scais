@@ -10,6 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['prefix' => 'webhook'], function(){
+        Route::get('/', 'Webhook@index');
+        Route::post('/auth', 'Webhook@auth');
+});
+
 Route::group(['prefix' => 'systemroles'], function(){
         Route::get('/', 'Systemroles@index');
         Route::get('/modal_roles/{id_sistema}', 'Systemroles@modal_roles');

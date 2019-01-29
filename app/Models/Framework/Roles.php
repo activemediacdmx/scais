@@ -94,6 +94,14 @@ class Roles extends Model
     return $respuesta;
   }
 
+  static public function changeToken($id_rol){
+    $query_resp = DB::table('fw_roles')
+            ->where('id_rol', $id_rol)
+            ->update([
+                'token'=> Helpme::token(32),
+                'user_mod'=> $_SESSION['id_usuario']
+            ]);
+  }
   static function setear_permiso($role,$metodo,$estado){
     if($estado == 'true'){
         $query_resp = DB::table('fw_permisos')->insert([
