@@ -51,7 +51,7 @@ $("body").on("change", "#auditar_fecha_alta", function(){
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'login/getAuditoriaUserDate/' + id_usuario + '/' + fecha,
+			url: app_url + 'login/getAuditoriaUserDate/' + id_usuario + '/' + fecha,
 			type: 'POST',
 			dataType: 'json',
 			beforeSend: function() {

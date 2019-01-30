@@ -22,10 +22,10 @@
 		</script>
 		<!--end::Web font -->
         <!--begin::Base Styles -->
-		<link href="<?=env('URL_PUBLIC')?>assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="<?=env('URL_PUBLIC')?>assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="<?=env('APP_URL')?>assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="<?=env('APP_URL')?>assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<!--end::Base Styles -->
-		<link rel="shortcut icon" href="<?=env('URL_PUBLIC')?>assets/demo/default/media/img/logo/favicon.ico" />
+		<link rel="shortcut icon" href="<?=env('APP_URL')?>assets/demo/default/media/img/logo/favicon.ico" />
 	</head>
 	<!-- end::Head -->
     <!-- end::Body -->
@@ -174,17 +174,17 @@
 		</div>
 		<!-- end:: Page -->
     	<!--begin::Base Scripts -->
-		<script src="<?=env('URL_PUBLIC')?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
-		<script src="<?=env('URL_PUBLIC')?>assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
+		<script src="<?=env('APP_URL')?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+		<script src="<?=env('APP_URL')?>assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
 		<!--end::Base Scripts -->
         <!--begin::Page Snippets -->
-		<script src="<?=env('URL_PUBLIC')?>assets/snippets/pages/user/login.js" type="text/javascript"></script>
+		<script src="<?=env('APP_URL')?>assets/snippets/pages/user/login.js" type="text/javascript"></script>
 		<!--end::Page Snippets -->
 
-    <script>var url_app = '<?=env('URL_APP')?>';</script>
+    <script>var app_url = '<?=env('APP_URL')?>';</script>
 
-    <script src="<?=env('URL_PUBLIC')?>assets/js/generales.js"></script>
-    <script src="<?=env('URL_PUBLIC')?>assets/js/common.js"></script>
+    <script src="<?=env('APP_URL')?>assets/js/generales.js"></script>
+    <script src="<?=env('APP_URL')?>assets/js/common.js"></script>
 
 	</body>
 

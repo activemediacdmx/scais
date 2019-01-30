@@ -124,7 +124,7 @@ function vincular_sistema(id_sistema) {
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'sistemas/vincular_sistema/' + id_usuario + '/' + id_sistema + '/' + estado ,
+			url: app_url + 'sistemas/vincular_sistema/' + id_usuario + '/' + id_sistema + '/' + estado ,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {

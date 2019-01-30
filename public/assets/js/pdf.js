@@ -5,7 +5,7 @@ function imprimir_demo(){
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 			}else{
 				alerta(resp_success['mensaje'],resp_success['error']);
 			}
@@ -21,7 +21,7 @@ $("body").on("click", "#pdf_js_fn_02", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 			}else{
 				alerta(resp_success['mensaje'],resp_success['error']);
 			}
@@ -37,7 +37,7 @@ $("body").on("click", "#pdf_js_fn_03", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 			}else{
 				alerta(resp_success['mensaje'],resp_success['error']);
 			}
@@ -53,7 +53,7 @@ $("body").on("click", "#pdf_js_fn_04", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 			}else{
 				alerta(resp_success['mensaje'],resp_success['error']);
 			}
@@ -71,8 +71,8 @@ $("body").on("click", "#pdf_js_fn_05", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
-				//window.location.href =  url_app + 'tmp/' + resp_success['token'] + '.pdf'
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
+				//window.location.href =  app_url + 'tmp/' + resp_success['token'] + '.pdf'
 				$("#menu_lat_flot").show();
 				$('body').removeClass('m-brand--minimize');
 				$('body').removeClass('m-aside-left--minimize');
@@ -91,7 +91,7 @@ $("body").on("click", "#pdf_js_fn_06", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 				$("#menu_lat_flot").show();
 				$('body').removeClass('m-brand--minimize');
 				$('body').removeClass('m-aside-left--minimize');
@@ -110,7 +110,7 @@ $("body").on("click", "#pdf_js_fn_07", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 				$("#menu_lat_flot").show();
 				$('body').removeClass('m-brand--minimize');
 				$('body').removeClass('m-aside-left--minimize');
@@ -129,7 +129,7 @@ $("body").on("click", "#pdf_js_fn_08", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 				$("#menu_lat_flot").show();
 				$('body').removeClass('m-brand--minimize');
 				$('body').removeClass('m-aside-left--minimize');
@@ -148,7 +148,7 @@ $("body").on("click", "#pdf_js_fn_09", function() {
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
 				/*$('#myModal').modal('hide');  << si se llama desde una modal esta se debe de ocultar*/
-				window.open( url_app + 'tmp/' + resp_success['token'] + '.pdf');
+				window.open( app_url + 'tmp/' + resp_success['token'] + '.pdf');
 				$("#menu_lat_flot").show();
 				$('body').removeClass('m-brand--minimize');
 				$('body').removeClass('m-aside-left--minimize');

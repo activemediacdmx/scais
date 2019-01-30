@@ -125,7 +125,7 @@ class Usuarios extends Controller
 
   public function resetpassword($token)
   {
-      if(!$token){Header("Location: ".URL_APP."login"); exit();}
+      if(!$token){Header("Location: ".APP_URL."login"); exit();}
       $token_valid = ModelUsuarios::verifica_token($token);
       if($token_valid['valid']){
         return view('login/restore');

@@ -3,7 +3,7 @@ function set_acl_extension(extension){
 	var estado = document.getElementById(extension).checked;
 	var user = document.getElementById("user").value;
 	$.ajax({
-		url: url_app + 'usuarios/set_acl_extension/' + user + '/' + extension + '/' + estado ,
+		url: app_url + 'usuarios/set_acl_extension/' + user + '/' + extension + '/' + estado ,
 		dataType: 'json',
 		success: function(resp_success){			
 			if (resp_success['resp'] == true) {
@@ -18,7 +18,7 @@ function set_acl_par(par){
 	var estado = document.getElementById(par).checked;
 	var user = document.getElementById("user").value;
 	$.ajax({
-		url: url_app + 'usuarios/set_acl_controlador/' + user + '/' + par + '/' + estado ,
+		url: app_url + 'usuarios/set_acl_controlador/' + user + '/' + par + '/' + estado ,
 		dataType: 'json',
 		success: function(resp_success){			
 			if (resp_success['resp'] == true) {
@@ -33,7 +33,7 @@ function set_acl_tercio(tercio){
 	var estado = document.getElementById(tercio).checked;
 	var user = document.getElementById("user").value;
 	$.ajax({
-		url: url_app + 'usuarios/set_acl_metodo/' + user + '/' + tercio + '/' + estado ,
+		url: app_url + 'usuarios/set_acl_metodo/' + user + '/' + tercio + '/' + estado ,
 		dataType: 'json',
 		success: function(resp_success){			
 			if (resp_success['resp'] == true) {

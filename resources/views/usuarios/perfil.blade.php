@@ -211,7 +211,7 @@ $(document).ready(function() {
           headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           },
-          url: url_app + 'usuarios/update_avatar/' + img[1],
+          url: app_url + 'usuarios/update_avatar/' + img[1],
           type: 'POST',
           dataType: 'json',
           success: function(resp_success){

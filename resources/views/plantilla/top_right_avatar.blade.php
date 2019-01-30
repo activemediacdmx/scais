@@ -33,7 +33,7 @@
 
             <?php if(Helpme::tiene_permiso('Usuarios|perfil')){ ?>
             <li class="m-nav__item">
-              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('URL_APP')?>usuarios/perfil');" class="m-nav__link">
+              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('APP_URL')?>usuarios/perfil');" class="m-nav__link">
                 <i class="m-nav__link-icon flaticon-profile-1"></i>
                 <span class="m-nav__link-title">
                   <span class="m-nav__link-wrap">
@@ -49,7 +49,7 @@
 
             <?php if(Helpme::tiene_permiso('Usuarios|index')){ ?>
             <li class="m-nav__item">
-              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('URL_APP')?>usuarios');" class="m-nav__link">
+              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('APP_URL')?>usuarios');" class="m-nav__link">
                 <i class="m-nav__link-icon flaticon-users"></i>
                 <span class="m-nav__link-text">
                   Control de usuarios
@@ -61,7 +61,7 @@
 
             <?php if(Helpme::tiene_permiso('Controllers|index')){ ?>
             <li class="m-nav__item">
-              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('URL_APP')?>controllers');" class="m-nav__link">
+              <a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=env('APP_URL')?>controllers');" class="m-nav__link">
                 <i class="m-nav__link-icon flaticon-interface-3"></i>
                 <span class="m-nav__link-text">
                   Controladores
@@ -75,7 +75,7 @@
 
             <?php if(isset($_SESSION['token'])){ ?>
             <li class="m-nav__item">
-              <a href="<?=env('URL_APP')?>" target="_blank" class="m-nav__link">
+              <a href="<?=env('APP_URL')?>" target="_blank" class="m-nav__link">
                 <i class="m-nav__link-icon flaticon-browser"></i>
                 <span class="m-nav__link-text">
                   Site
@@ -83,7 +83,7 @@
               </a>
             </li>
             <li class="m-nav__item">
-              <a href="<?=env('URL_APP')?>login/lockSession" class="m-nav__link">
+              <a href="<?=env('APP_URL')?>login/lockSession" class="m-nav__link">
                 <i class="m-nav__link-icon flaticon-lock"></i>
                 <span class="m-nav__link-text">
                   Bloquear

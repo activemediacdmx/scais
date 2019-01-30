@@ -75,7 +75,7 @@ function setPermission(id_metodo) {
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'roles/establecer_permiso/' + role + '/' + metodo + '/' + estado ,
+			url: app_url + 'roles/establecer_permiso/' + role + '/' + metodo + '/' + estado ,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -96,7 +96,7 @@ function vincular_rol(rol) {
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'roles/establecer_acceso/' + id_rol + '/' + access + '/' + estado ,
+			url: app_url + 'roles/establecer_acceso/' + id_rol + '/' + access + '/' + estado ,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {

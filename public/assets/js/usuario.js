@@ -47,7 +47,7 @@ $("body").on("click", "#usr_js_fn_01", function() {
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'usuarios/editar_perfil',
+			url: app_url + 'usuarios/editar_perfil',
 			type: 'POST',
 			data: $("#editar_perfil").serialize(),
 			dataType: 'json',
@@ -316,7 +316,7 @@ function tyc(stat) {
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app +  'usuarios/tyc/' + stat,
+			url: app_url +  'usuarios/tyc/' + stat,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -342,7 +342,7 @@ function cambiar_pass(){
 			headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			url: url_app + 'usuarios/cambiar_password',
+			url: app_url + 'usuarios/cambiar_password',
 			type: 'POST',
 			data: $("#chge_pass").serialize(),
 			dataType: 'json',

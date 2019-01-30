@@ -21,17 +21,17 @@
 		</script>
 		<!--end::Web font -->
         <!--begin::Base Styles -->
-		<link href="<?=env('URL_PUBLIC')?>assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="<?=env('URL_PUBLIC')?>assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="<?=env('APP_URL')?>assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="<?=env('APP_URL')?>assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<!--end::Base Styles -->
-		<link rel="shortcut icon" href="<?=env('URL_PUBLIC')?>assets/demo/default/media/img/logo/favicon.ico" />
+		<link rel="shortcut icon" href="<?=env('APP_URL')?>assets/demo/default/media/img/logo/favicon.ico" />
 	</head>
 	<!-- end::Head -->
     <!-- end::Body -->
 	<body class="m--skin- m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
 		<!-- begin:: Page -->
 		<div class="m-grid m-grid--hor m-grid--root m-page">
-			<div class="m-grid__item m-grid__item--fluid m-grid  m-error-1" style="background-image: url(<?=env('URL_PUBLIC')?>assets/app/media/img//error/bg1.jpg);">
+			<div class="m-grid__item m-grid__item--fluid m-grid  m-error-1" style="background-image: url(<?=env('APP_URL')?>assets/app/media/img//error/bg1.jpg);">
 				<div class="m-error_container">
 					<span class="m-error_number">
 						<h1>
@@ -46,8 +46,8 @@
 		</div>
 		<!-- end:: Page -->
     	<!--begin::Base Scripts -->
-		<script src="<?=env('URL_PUBLIC')?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
-		<script src="<?=env('URL_PUBLIC')?>assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
+		<script src="<?=env('APP_URL')?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+		<script src="<?=env('APP_URL')?>assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
 		<!--end::Base Scripts -->
 	</body>
 	<!-- end::Body -->

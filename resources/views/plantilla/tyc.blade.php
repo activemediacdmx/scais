@@ -9,14 +9,14 @@
             name="description" />
         <meta content="" name="author" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link href="<?=env('URL_PUBLIC')?>assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>assets/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>assets/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>css/login/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>css/login/plugins-md.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?=env('URL_PUBLIC')?>css/login/coming-soon.min.css" rel="stylesheet" type="text/css" />
-        <link rel="icon" href="<?=env('URL_APP')?>assets/img/favicons/favicon-32x32.png" />
+        <link href="<?=env('APP_URL')?>assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=env('APP_URL')?>assets/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=env('APP_URL')?>assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=env('APP_URL')?>assets/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=env('APP_URL')?>css/login/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="<?=env('APP_URL')?>css/login/plugins-md.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=env('APP_URL')?>css/login/coming-soon.min.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" href="<?=env('APP_URL')?>assets/img/favicons/favicon-32x32.png" />
 	</head>
     <body class="">
         <div class="container" style="width:960px;">
@@ -204,27 +204,27 @@
             </div>
         </div>
         <!--[if lt IE 9]>
-<script src="<?=env('URL_PUBLIC')?>assets/plugins/respond.min.js"></script>
-<script src="<?=env('URL_PUBLIC')?>assets/plugins/excanvas.min.js"></script>
-<script src="<?=env('URL_PUBLIC')?>assets/plugins/ie8.fix.min.js"></script>
+<script src="<?=env('APP_URL')?>assets/plugins/respond.min.js"></script>
+<script src="<?=env('APP_URL')?>assets/plugins/excanvas.min.js"></script>
+<script src="<?=env('APP_URL')?>assets/plugins/ie8.fix.min.js"></script>
 <![endif]-->
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/countdown/jquery.countdown.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/pages/app.min.js" type="text/javascript"></script>
-        <script src="<?=env('URL_PUBLIC')?>assets/pages/coming-soon.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/js.cookie.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/countdown/jquery.countdown.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/pages/app.min.js" type="text/javascript"></script>
+        <script src="<?=env('APP_URL')?>assets/pages/coming-soon.min.js" type="text/javascript"></script>
 
 		<script>
-			var url_app = '<?=env('URL_APP')?>';
+			var app_url = '<?=env('APP_URL')?>';
 		</script>
-		<script src="<?=env('URL_PUBLIC')?>assets/js/generales.js"></script>
-		<script src="<?=env('URL_PUBLIC')?>assets/js/common.js"></script>
-		<script src="<?=env('URL_PUBLIC')?>assets/js/usuario.js"></script>
+		<script src="<?=env('APP_URL')?>assets/js/generales.js"></script>
+		<script src="<?=env('APP_URL')?>assets/js/common.js"></script>
+		<script src="<?=env('APP_URL')?>assets/js/usuario.js"></script>
 
     </body>
 

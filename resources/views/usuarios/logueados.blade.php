@@ -56,7 +56,7 @@ $(document).ready(function() {
           /**/
         },
         "language": {
-          "url": "<?=env('URL_APP')?>assets/plugins/datatables/Spanish.json"
+          "url": "<?=env('APP_URL')?>assets/plugins/datatables/Spanish.json"
         },
 				"searching": true,
         "processing": true,

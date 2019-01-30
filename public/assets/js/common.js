@@ -4,12 +4,12 @@ $("body").on("click", "#comm_js_fn_01", function() {
 		headers: {
 					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		},
-		url: url_app + 'login/salir',
+		url: app_url + 'login/salir',
 		type: 'POST',
 		dataType: "json",
 		success: function(respuesta){
 			if(respuesta[0].resp='correcto'){
-				window.location = url_app +  "login";
+				window.location = app_url +  "login";
 			}else{
 				alerta('Alerta!','Error en el sistema');
 			}
@@ -23,12 +23,12 @@ function salirAlternativo(){
 		headers: {
 					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		},
-		url: url_app + 'login/salirAlternativo',
+		url: app_url + 'login/salirAlternativo',
 		type: 'POST',
 		dataType: "json",
 		success: function(respuesta){
 			if(respuesta[0].resp='correcto'){
-				window.location = url_app +  "login";
+				window.location = app_url +  "login";
 			}else{
 				alerta('Alerta!','Error en el sistema');
 			}
@@ -50,7 +50,7 @@ $("body").on("click", ".loginfn", function() {
 				headers: {
 							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 				},
-				url: url_app + 'login/logear',
+				url: app_url + 'login/logear',
 				type: 'POST',
 				data: 'usuario='+$('#usuario').get(0).value+"&password="+$('#password').get(0).value,
 				dataType: "json",
@@ -61,9 +61,9 @@ $("body").on("click", ".loginfn", function() {
 					if(respuesta[0].resp=='acceso_correcto'){
 						if(respuesta[2].via == 'correcta'){
 							if(respuesta[1].dispositivo=='celular'){
-								window.location = url_app + "mobile";
+								window.location = app_url + "mobile";
 							}else{
-								window.location = url_app + "inicio";
+								window.location = app_url + "inicio";
 							}
 						}else if(respuesta[2].via == 'disabled'){
 							alerta('Alerta!','El logueo esta deshabilitado de manera temporal por el administrador');
@@ -198,7 +198,7 @@ function valida_logeo(e,decReq,boton){
 				headers: {
 							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 				},
-				url: url_app + 'login/logear',
+				url: app_url + 'login/logear',
 				type: 'POST',
 				data: 'usuario='+$('#usuario').get(0).value+"&password="+$('#password').get(0).value,
 				dataType: "json",
@@ -206,9 +206,9 @@ function valida_logeo(e,decReq,boton){
 					if(respuesta[0].resp=='acceso_correcto'){
 						if(respuesta[2].via == 'correcta'){
 							if(respuesta[1].dispositivo=='celular'){
-								window.location = url_app + "mobile";
+								window.location = app_url + "mobile";
 							}else{
-								window.location = url_app + "inicio";
+								window.location = app_url + "inicio";
 							}
 						}else if(respuesta[2].via == 'disabled'){
 							alerta('Alerta!','El logueo esta deshabilitado de manera temporal por el administrador');

@@ -43,7 +43,7 @@ $(document).ready(function() {
         /**/
       },
     "language": {
-        "url": "<?=env('URL_APP')?>assets/plugins/datatables/Spanish.json"
+        "url": "<?=env('APP_URL')?>assets/plugins/datatables/Spanish.json"
     },
 		"searching": true,
     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],

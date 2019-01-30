@@ -73,9 +73,9 @@ var SnippetLogin = function() {
                   if(respuesta[0].resp=='acceso_correcto'){
         						if(respuesta[2].via == 'correcta'){
         							if(respuesta[1].dispositivo=='celular'){
-        								window.location = url_app + "mobile";
+        								window.location = app_url + "mobile";
         							}else{
-        								window.location = url_app + "inicio";
+        								window.location = app_url + "inicio";
         							}
         						}else if(respuesta[2].via == 'disabled'){
         							alerta('Alerta!','El logueo esta deshabilitado de manera temporal por el administrador');
