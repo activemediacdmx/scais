@@ -13,7 +13,7 @@
 
         <div id="m_header_menu" class="m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark "  >
            <h5 class="m-subheader__title m-subheader__title--separator" id="breadcrumb-title" style="top: 33px; position: relative;">
-              <?=env('SITE_NAME')?>
+              <?=env('APP_NAME')?>
            </h5>
         </div>
 

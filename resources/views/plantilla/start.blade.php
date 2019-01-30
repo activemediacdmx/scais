@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>
-			<?=env('SITE_NAME')?>
+			<?=env('APP_NAME')?>
 		</title>
 		<meta name="description" content="Framedev -  Framework para desarrolladores">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">

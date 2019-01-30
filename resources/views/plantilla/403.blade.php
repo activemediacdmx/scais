@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>
-			<?=env('SITE_NAME')?>
+			<?=env('APP_NAME')?>
 		</title>
 		<meta name="description" content="Latest updates and statistic charts">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +39,7 @@
 						</h1>
 					</span>
 					<p class="m-error_desc">
-						<?=env('SITE_NAME')?>:<br> El recurso que solicita no está disponible para usted, se ha iniciado un log de registro.
+						<?=env('APP_NAME')?>:<br> El recurso que solicita no está disponible para usted, se ha iniciado un log de registro.
 					</p>
 				</div>
 			</div>

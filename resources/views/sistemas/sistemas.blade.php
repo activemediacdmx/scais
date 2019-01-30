@@ -27,6 +27,7 @@ $("#breadcrumb-title").append(' / Administración de sistemas');
 								<th>Sistema</th>
 								<th>Nombre</th>
 								<th>Descripción</th>
+								<th>SYSTEM KEY</th>
 								<th>&nbsp;</th>
 						</tr>
 					</thead>

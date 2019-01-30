@@ -169,15 +169,18 @@ class Login extends Model
 
   }
 
-  static function storeSession($id_usuario){
+  static function storeSession($id_usuario,$ip = null){
+    if($ip == null)
+       $ip = $_SERVER['REMOTE_ADDR'];
+
     $store = new Login;
     $store->id_usuario = $id_usuario;
     $store->session_id = session_id();
     $store->open = 1;
     $store->fecha_login = date("Y-m-d H:i:s");
-    $store->ipv4 = $_SERVER['REMOTE_ADDR'];
+    $store->ipv4 = $ip;
     $store->ipv6 = Helpme::ipv4to6();
-    $store->user_alta = $_SESSION['id_usuario'];
+    $store->user_alta = $id_usuario;
     $store->fecha_alta = date("Y-m-d H:i:s");
     $store->save();
   }
@@ -221,7 +224,124 @@ class Login extends Model
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  static function logearClienteRemoto($usuario,$password,$ip){
+
+    $stat = self::getStatusUser($usuario);
+
+    $array[5] = ($stat == 9)?array('resp'=>"inhabilitado"):array('resp'=>"habilitado");
+
+    $password_md5=md5($password);
+
+    $logged = DB::table('fw_usuarios as fws')
+              ->join('fw_usuarios_config AS fwu', 'fwu.id_usuario', '=', 'fws.id_usuario')
+              ->where('fws.usuario', '=', $usuario)
+              ->where('fws.password', '=', $password_md5)
+              ->where('fws.cat_status', '=', 3)
+              ->get();
+
+
+    if(count($logged) == 1){
+
+        foreach ($logged as $row) {
+            $array[3]['id_usuario']=$row->id_usuario;
+            $array[3]['id_rol']=$row->id_rol;
+            $array[3]['hora_acceso']= time();
+            $array[3]['usuario']=$row->usuario;
+            $array[3]['id_ubicacion']=$row->id_ubicacion;
+            $array[3]['correo']=$row->correo;
+            $array[3]['tyc']=$row->aceptar_tyc;
+            $array[3]['pass_chge']=$row->cat_pass_chge;
+            $array[3]['token'] = Helpme::token(62);
+            $array[0]=array('resp'=>"acceso_correcto");
+        }
+
+        $array[1] = array('dispositivo'=>'pc');
+        $array[4] = self::permisosClienteRemoto($array[3]['id_rol']);
+        $array[2] = array('via'=>"correcta");
+        self::storeSession($array[3]['id_usuario'],$ip);
+
+
+    }else{
+      if(self::existeUsuario($usuario))
+          self::putLoggerLogin($usuario);
+
+      $array[0]=array('resp'=>"acceso_incorrecto");
+    }
+    return json_encode($array);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  static function permisosClienteRemoto($rol){
+
+    $permisos = DB::table('fw_permisos as fwp')
+              ->join('fw_metodos as fwm','fwp.id_metodo','=','fwm.id_metodo')
+              ->select('fwm.controlador', 'fwm.metodo', 'fwm.id_metodo')
+              ->where('fwp.id_rol', '=', $rol)
+              ->get();
+
+    $accesos = array();
+    $accessid = array();
+    if(count($permisos)>=1){
+      foreach ($permisos as $num => $row) {
+        $accesos[$num] = $row->controlador .'|'. $row->metodo;
+        $index = strtolower($row->controlador) .'|'. strtolower($row->metodo);
+        $accessid[$index] = $row->id_metodo;
+      }
+      $array[0]['permisos'] = $accesos;
+      $array[1]['accessid'] = $accessid;
+      return $array;
+    }else{
+      $array[0]['permisos'] = '';
+      $array[1]['accessid'] = '';
+      return $array;
+    }
+  }
+
   static function logear($request){
+
     $stat = self::getStatusUser($request->input('usuario'));
     if($stat == 9){
       $array[]=array('resp'=>"inhabilitado");
@@ -244,7 +364,7 @@ class Login extends Model
       foreach ($logged as $row) {
         self::session_duplicada($row->id_usuario);
 
-        //session_name(SITE_NAME);
+        //session_name(APP_NAME);
         $_SESSION['id_usuario']=$row->id_usuario;
         $_SESSION['id_rol']=$row->id_rol;
         $_SESSION['hora_acceso']= time();

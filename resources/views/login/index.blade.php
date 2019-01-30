@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>
-			<?=env('SITE_NAME')?>
+			<?=env('APP_NAME')?>
 		</title>
 		<meta name="description" content="Latest updates and statistic charts">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,7 +37,7 @@
 					<div class="m-stack m-stack--hor m-stack--desktop">
 						<div class="m-stack__item m-stack__item--fluid">
 							<div class="m-login__wrapper">
-								<div class="m-login__logo"><?=env('SITE_NAME')?></div>
+								<div class="m-login__logo"><?=env('APP_NAME')?></div>
 
                 <!--Formulario de inicio de sesion-->
 								<div class="m-login__signin">
@@ -155,7 +155,7 @@
 						<div class="m-stack__item m-stack__item--center">
 							<div class="m-login__account">
 								<span class="m-login__account-msg">
-									2017 &copy; <?=env('SITE_NAME')?>
+									2017 &copy; <?=env('APP_NAME')?>
 								</span>
 								&nbsp;&nbsp;
 								<span href="javascript:;" id="[dis]m_login_signup" class="m-link m-link--focus m-login__account-link">
@@ -1372,7 +1372,7 @@
 	}
 	</script>
 	<h1 class="main-title">
-	    <span class="thin"><?=env('SITE_NAME')?></span>
+	    <span class="thin"><?=env('APP_NAME')?></span>
 	    <span class="lara_tittle">
 	        <span class="laraimg"><a href="{{ action('Site@index') }}"><img class="inter_larimg" src="img/laravel.svg"></a></span>
 	        <?=env('SLOGAN_NAME')?>

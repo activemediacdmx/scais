@@ -5,7 +5,7 @@
 <html lang="es">
     <head>
         <meta charset="utf-8" />
-        <title><?=env('SITE_NAME')?></title>
+        <title><?=env('APP_NAME')?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -25,7 +25,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 coming-soon-header">
-                    <span style="font-size:3em; color:#FFF;"><?=env('SITE_NAME')?></span>
+                    <span style="font-size:3em; color:#FFF;"><?=env('APP_NAME')?></span>
                 </div>
             </div>
             <div class="row">
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 coming-soon-footer"> 2017 &copy; <?=env('SITE_NAME')?> </div>
+                <div class="col-md-12 coming-soon-footer"> 2017 &copy; <?=env('APP_NAME')?> </div>
             </div>
         </div>
         <!--[if lt IE 9]>

@@ -32,7 +32,7 @@
         <a  href="javascript:;" class="m-menu__link m-menu__toggle">
           <i class="m-menu__link-icon flaticon-network"></i>
           <span class="m-menu__link-text">
-            <?=env('SITE_NAME')?>
+            <?=env('APP_NAME')?>
           </span>
           <i class="m-menu__ver-arrow la la-angle-right"></i>
         </a>
@@ -43,7 +43,7 @@
             <li class="m-menu__item  m-menu__item--parent" aria-haspopup="true" >
               <span class="m-menu__link">
                 <span class="m-menu__link-text">
-                  <?=env('SITE_NAME')?>
+                  <?=env('APP_NAME')?>
                 </span>
               </span>
             </li>

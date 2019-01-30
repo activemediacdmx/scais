@@ -15,6 +15,16 @@ class Sistemas extends Model
     return Sistemas::all();
   }
 
+  static public function systemKey($system){
+    $keys =  DB::table('sistemas')
+                    ->select('system_key')
+                    ->where('nombre', '=', $system)
+                    ->get();
+      foreach ($keys as $key)
+      {
+          return $key->system_key;
+      }
+  }
   static function sistemas_accesibles($id_usuario){
     return DB::table('sistemas as s')
                     ->join('sistemas_usuario as su','su.id_sistema','=','s.id_sistema')
@@ -70,6 +80,9 @@ class Sistemas extends Model
     if(null !== ($request->input('nombre'))) { $store->nombre = $request->input('nombre'); }
     if(null !== ($request->input('nombre_largo'))) { $store->nombre_largo = $request->input('nombre_largo'); }
     if(null !== ($request->input('descripcion'))) { $store->descripcion = $request->input('descripcion'); }
+
+    $store->system_key = strtoupper(Helpme::token(40));
+
     if(null !== ($request->input('cat_status_sistema'))) { $store->cat_status_sistema = $request->input('cat_status_sistema'); }
 
     $store->user_alta = $_SESSION['id_usuario'];
@@ -93,6 +106,7 @@ class Sistemas extends Model
                 'nombre'=> $request->input('nombre'),
                 'nombre_largo'=> $request->input('nombre_largo'),
                 'descripcion'=> $request->input('descripcion'),
+                'system_key'=> strtoupper(Helpme::token(40)),
                 'cat_status_sistema'=> $request->input('cat_status_sistema'),
                 'user_mod'=> $_SESSION['id_usuario'],
                 'fecha_mod'=> date("Y-m-d H:i:s")

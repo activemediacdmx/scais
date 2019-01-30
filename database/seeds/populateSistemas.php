@@ -18,6 +18,7 @@ class populateSistemas extends Seeder
       'nombre'=>'SCAIS',
       'nombre_largo'=>'Sistema de control de acceso a infraestructura y servicios',
       'descripcion'=>'Sistema para centralizar la gestión de usuarios',
+      'system_key'=>'XDKFXRENTHC0Y8AOQDLI6B2UUBZLMTRIJZOQ4YVM',
       'user_alta'=>1,
       'user_mod'=>1,
       'fecha_alta'=>'2019-01-05 19:13:09',

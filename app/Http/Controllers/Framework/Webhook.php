@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Login;
+use App\Models\Sistemas;
 use Helpme;
 
 class Webhook extends Controller
@@ -14,18 +15,22 @@ class Webhook extends Controller
   static public function index(){}
 
   static public function auth(){
-    $app_secret = 'MY_SECRET';
-		$webhook_signature = $_SERVER ['HTTP_SYSTEMVERIFY_SIGNATURE'];
-		$body = file_get_contents('php://input');
-		$expected_signature = hash_hmac( 'sha256', $body, $app_secret, false );
 
-		if($webhook_signature == $expected_signature) {
+      $app_secret = Sistemas::systemKey($_SERVER ['HTTP_SYSTEM']);
+  		$webhook_signature = $_SERVER ['HTTP_SYSTEMVERIFY_SIGNATURE'];
+      $remote_ip = $_SERVER ['HTTP_IP'];
+  		$body = file_get_contents('php://input');
+  		$expected_signature = hash_hmac( 'sha256', $body, $app_secret, false );
+  		if($webhook_signature == $expected_signature) {
+          $data = json_decode($body);
+          $loginData = Login::logearClienteRemoto($data->usuario,$data->password,$remote_ip);
+          $loginData = json_encode($loginData);
 
-      header("Post:".$webhook_signature);
-			header("Status: 200 OK!");
+        header($loginData);
+  			header("Status: 200 OK!");
+  		} else {
+  			header("Status: 401 Not authenticated".$app_secret);
+  		}
 
-		} else {
-			header("Status: 401 Not authenticated");
-		}
   }
 }

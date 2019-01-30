@@ -4,7 +4,7 @@
         <div class="m-stack m-stack--flex-tablet-and-mobile m-stack--ver m-stack--desktop">
           <div class="m-stack__item m-stack__item--left m-stack__item--middle m-stack__item--last">
             <span class="m-footer__copyright">
-              2018 &copy;  SAFCDMX <?=env('SITE_NAME')?>
+              2018 &copy;  SAFCDMX <?=env('APP_NAME')?>
               <a href="javascript:;" class="m-link">
                 <?=env('SLOGAN_NAME')?>
               </a> BRANCH::MASTER

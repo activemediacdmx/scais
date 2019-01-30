@@ -5,7 +5,7 @@
 <html lang="es">
     <head>
         <meta charset="utf-8" />
-        <title><?=env('SITE_NAME')?></title>
+        <title><?=env('APP_NAME')?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="Framedev"
@@ -23,7 +23,7 @@
     <body class="">
         <div class="page-lock">
             <div class="page-logo">
-                <a class="brand" href="javascript:;"><?=env('SITE_NAME')?></a>
+                <a class="brand" href="javascript:;"><?=env('APP_NAME')?></a>
             </div>
             <div class="page-body">
 
@@ -63,7 +63,7 @@
                     </form>
                 </div>
             </div>
-            <div class="page-footer-custom"> 2018 &copy; SAFCDMX <?=env('SITE_NAME')?> </div>
+            <div class="page-footer-custom"> 2018 &copy; SAFCDMX <?=env('APP_NAME')?> </div>
         </div>
         <!--[if lt IE 9]>
 		<script src="<?=env('APP_URL')?>assets/plugins/respond.min.js"></script>

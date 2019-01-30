@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>
-			<?=env('SITE_NAME')?>
+			<?=env('APP_NAME')?>
 		</title>
 		<meta name="description" content="Latest updates and statistic charts">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +39,7 @@
 						</h1>
 					</span>
 					<p class="m-error_desc">
-						<?=env('SITE_NAME')?>:<br> El recurso que solicita no existe o fué eliminado
+						<?=env('APP_NAME')?>:<br> El recurso que solicita no existe o fué eliminado
 					</p>
 				</div>
 			</div>

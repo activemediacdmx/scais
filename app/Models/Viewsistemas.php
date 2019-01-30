@@ -16,7 +16,7 @@ class Viewsistemas extends Model
     $system = new Viewsistemas();
     $dataTable = new DT(
       $system,
-      ['id_sistema', 'nombre', 'nombre_largo', 'descripcion']
+      ['id_sistema', 'nombre', 'nombre_largo', 'descripcion', 'system_key']
     );
 
     $dataTable->setFormatRowFunction(function ($system) {
@@ -25,6 +25,7 @@ class Viewsistemas extends Model
         $system->nombre ,
         $system->nombre_largo ,
         $system->descripcion,
+        $system->system_key,
         self::ou1($system->id_sistema)
       ];
     });
