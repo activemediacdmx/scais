@@ -16,14 +16,10 @@ class Sistemas extends Model
   }
 
   static public function systemKey($system){
-    $keys =  DB::table('sistemas')
-                    ->select('system_key')
+    return  DB::table('sistemas')
+                    ->select('id_sistema','system_key')
                     ->where('nombre', '=', $system)
                     ->get();
-      foreach ($keys as $key)
-      {
-          return $key->system_key;
-      }
   }
   static function sistemas_accesibles($id_usuario){
     return DB::table('sistemas as s')

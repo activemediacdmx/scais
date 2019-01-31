@@ -750,7 +750,7 @@ class populateMetodos extends Seeder
       DB::table('fw_metodos')->insert(
       array(
       'id_metodo'=>47,
-      'id_sistema'=>NULL,
+      'id_sistema'=>1,
       'controlador'=>'Sistemas',
       'metodo'=>'editar_sistema',
       'nombre'=>'Editar Sistemas',

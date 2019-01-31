@@ -139,6 +139,7 @@ class Roles extends Model
   static function getMetodos(){
     $metodos = DB::table('fw_metodos')
               ->orderBy('controlador', 'asc')
+              ->where('id_sistema','=', 1)
               ->get();
     if(count($metodos)>=1){
       return $metodos;

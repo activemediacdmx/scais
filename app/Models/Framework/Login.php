@@ -224,40 +224,42 @@ class Login extends Model
     }
   }
 
+  static function getStatusRemoteUser($usuario, $id_sistema){
+    $status = DB::table('fw_usuarios as u')
+              ->join('sistemas_usuario AS su', 'su.id_usuario', '=', 'u.id_usuario')
+              ->join('sistemas AS s', 'su.id_sistema', '=', 's.id_sistema')
+              ->select('u.cat_status','su.id_sistemas_usuario','su.id_sistema','su.id_usuario')
+              ->where('u.usuario', '=', $usuario)
+              ->where('s.id_sistema', '=', $id_sistema)
+              ->get();
+    if(count($status)>=1){
+      foreach ($status as $num => $row) {
+         if($row->cat_status == 9){
+            return "inhabilitado";
+         }else{
+            return "habilitado";
+         }
+      }
+    }else{
+      return 'No autorizado';
+    }
+  }
 
+  static function logearClienteRemoto($usuario,$password,$ip,$id_sistema){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  static function logearClienteRemoto($usuario,$password,$ip){
-
-    $stat = self::getStatusUser($usuario);
-
-    $array[5] = ($stat == 9)?array('resp'=>"inhabilitado"):array('resp'=>"habilitado");
+    $array[5] = array('resp'=>self::getStatusRemoteUser($usuario,$id_sistema));
 
     $password_md5=md5($password);
 
-    $logged = DB::table('fw_usuarios as fws')
-              ->join('fw_usuarios_config AS fwu', 'fwu.id_usuario', '=', 'fws.id_usuario')
-              ->where('fws.usuario', '=', $usuario)
-              ->where('fws.password', '=', $password_md5)
-              ->where('fws.cat_status', '=', 3)
+    $logged = DB::table('fw_usuarios as u')
+              ->join('fw_usuarios_config AS uc', 'uc.id_usuario', '=', 'u.id_usuario')
+              ->join('sistemas_usuario AS su', 'su.id_usuario', '=', 'u.id_usuario')
+              ->join('sistemas AS s', 'su.id_sistema', '=', 's.id_sistema')
+              ->select('u.id_usuario', 'su.id_rol', 'u.usuario', 'u.id_ubicacion', 'u.correo', 'uc.aceptar_tyc', 'u.cat_pass_chge')
+              ->where('u.usuario', '=', $usuario)
+              ->where('u.password', '=', $password_md5)
+              ->where('u.cat_status', '=', 3)
+              ->where('s.id_sistema', '=', $id_sistema)
               ->get();
 
 
@@ -283,36 +285,13 @@ class Login extends Model
 
 
     }else{
-      if(self::existeUsuario($usuario))
-          self::putLoggerLogin($usuario);
+      if(self::existeRemoteUsuario($usuario, $id_sistema))
+          self::putRemoteLoggerLogin($usuario, $id_sistema);
 
       $array[0]=array('resp'=>"acceso_incorrecto");
     }
     return json_encode($array);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   static function permisosClienteRemoto($rol){
 
@@ -338,6 +317,56 @@ class Login extends Model
       $array[1]['accessid'] = '';
       return $array;
     }
+  }
+
+  static function putRemoteLoggerLogin($usuario, $id_sistema){
+    $id_usuario = self::getIdRemoteUsuario($usuario, $id_sistema);
+    $ahora = date("Y-m-d H:i:s");
+    $logger = self::selectLoggerLogin($id_usuario);
+    if($logger['id_login_log'] !== NULL){
+      if($logger['intentos'] <= 4){
+        $segundos = Helpme::diferenciaSegundos($logger['fecha'],$ahora);
+        ($segundos <= 600)?self::updateLoggerLogin($logger['id_login_log']):self::insertLoggerLogin($id_usuario);
+      }else{
+        self::inhabilitarUsuario($id_usuario);
+      }
+    }else{
+      self::insertLoggerLogin($id_usuario);
+    }
+  }
+
+  static function getIdRemoteUsuario($usuario, $id_sistema){
+    $idu = DB::table('fw_usuarios as u')
+              ->join('sistemas_usuario AS su', 'su.id_usuario', '=', 'u.id_usuario')
+              ->join('sistemas AS s', 'su.id_sistema', '=', 's.id_sistema')
+              ->select('u.id_usuario')
+              ->where('u.usuario', '=', $usuario)
+              ->where('s.id_sistema', '=', $id_sistema)
+              ->get();
+      if(count($idu)>=1){
+        foreach ($idu as $num => $row) {
+           return $row->id_usuario;
+        }
+      }else{
+        return false;
+      }
+  }
+
+  static function existeRemoteUsuario($usuario, $id_sistema){
+
+    $idu = DB::table('fw_usuarios as u')
+              ->join('sistemas_usuario AS su', 'su.id_usuario', '=', 'u.id_usuario')
+              ->join('sistemas AS s', 'su.id_sistema', '=', 's.id_sistema')
+              ->select('u.id_usuario')
+              ->where('u.usuario', '=', $usuario)
+              ->where('s.id_sistema', '=', $id_sistema)
+              ->get();
+    if(count($idu)>=1){
+      return true;
+    }else{
+      return false;
+    }
+
   }
 
   static function logear($request){

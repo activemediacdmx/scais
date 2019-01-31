@@ -19,4 +19,22 @@ class Systemusers extends Model
                   ->groupBy('fwu.id_usuario')
                   ->count();
   }
+
+  static function edita_rol_usuario($request){
+    $query_resp = DB::table('sistemas_usuario')
+          ->where('id_usuario', $request->input('id_usuario'))
+          ->where('id_sistema', $request->input('id_sistema'))
+          ->update([
+              'id_rol'=> $request->input('id_rol'),
+              'user_mod'=> $_SESSION['id_usuario']
+          ]);
+
+    if($query_resp){
+      $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+    }else{
+      $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
+    }
+    return $respuesta;
+  }
+
 }

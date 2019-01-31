@@ -237,3 +237,54 @@ $("body").on("click", "#sys_js_fn_09", function() {
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-14');}
 		});
 });
+
+
+$("body").on("click", ".sys_js_fn_10", function() {
+		id_usuario = $(this).attr('data-function');
+		id_sistema = $(this).attr('data-system');
+			$.ajax({
+				headers: {
+							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				url: 'systemusers/datos_usuario/' + id_usuario + '/' + id_sistema,
+				dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+				error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-15');}
+			});
+});
+
+$("body").on("click", "#sys_js_fn_11", function() {
+	var msj_error="";
+	if( $('#id_rol').get(0).value == "" )	msj_error+='Olvidó seleccionar Rol de usuario.<br />';
+	if( !msj_error == "" ){
+		alerta('Faltan datos', msj_error);
+		return false;
+	}
+
+		$.ajax({
+			headers: {
+						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+			url: 'systemusers/edita_rol_usuario',
+			type: 'POST',
+			data: $("#edita_rol_usuario").serialize(),
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#usuarios').DataTable().ajax.reload();
+				}else{
+					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-16');}
+		});
+
+});

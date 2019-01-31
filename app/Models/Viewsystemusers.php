@@ -16,7 +16,7 @@ class Viewsystemusers extends Model
     $users = new Viewsystemusers();
     $dataTable = new DT(
       $users->where('id_sistema','=', $id_sistema),
-      ['id_usuario', 'usuario', 'correo', 'nombres', 'apellido_paterno', 'apellido_materno', 'descripcion', 'cat_status']
+      ['id_usuario', 'usuario', 'correo', 'nombres', 'apellido_paterno', 'apellido_materno', 'descripcion', 'cat_status', 'id_sistema']
     );
 
     $dataTable->setFormatRowFunction(function ($users) {
@@ -28,16 +28,16 @@ class Viewsystemusers extends Model
         $users->apellido_paterno ,
         $users->apellido_materno ,
         $users->descripcion ,
-        self::ou2($users->id_usuario,$users->cat_status)
+        self::ou2($users->id_usuario,$users->cat_status,$users->id_sistema)
       ];
     });
     return $dataTable->make();
   }
 
-  static function ou2($id_usuario, $cat_status){
+  static function ou2($id_usuario, $cat_status, $id_sistema){
 
     $salida = '
-    <a data-function="'.$id_usuario.'" class="usr_js_fn_03 btn btn-outline-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
+    <a data-function="'.$id_usuario.'" data-system="'.$id_sistema.'" class="sys_js_fn_10 btn btn-outline-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
       <i class="flaticon-cogwheel"></i>
     </a>
     ';

@@ -23,6 +23,46 @@ class Systemroles extends Model
     }
   }
 
+  static function selectRolesSystemByTipo($cat_tiporol,$id_rol,$id_sistema,$select = NULL){
+    $accesos = self::selectRolesByAccess($id_rol);
+
+    $roles = DB::table('fw_roles')
+              ->whereIn('cat_tiporol',explode(',',$cat_tiporol))
+              ->whereIn('id_rol',explode(',',$accesos))
+              ->where('id_sistema','=',$id_sistema)
+              ->get();
+
+    $array = array();
+    if(count($roles)>=1){
+      $cont = 0;
+      foreach ($roles as $row) {
+        $array[$cont]['value']=$row->id_rol;
+        $array[$cont]['valor']=$row->descripcion;
+        $cont++;
+      }
+    }
+    return Helpme::setOption($array,$select);
+  }
+
+  static function selectRolesByAccess($id_rol){
+    $access = DB::table('fw_acceso AS rolacc')
+              ->join('fw_roles as rol','rolacc.id_access','=','rol.id_rol')
+              ->select('rolacc.id_access', 'rol.descripcion')
+              ->where('rolacc.id_propietario', '=', $id_rol)
+              ->where('rolacc.propietario', '=', 'fw_roles')
+              ->where('rolacc.access', '=', 'fw_roles')
+              ->orderBy('rolacc.id_access','asc')
+              ->get();
+    $return = '';
+    if(count($access)>=1){
+      foreach ($access as $row) {
+        $return .= $row->id_access.',';
+      }
+    }
+    $return = rtrim($return, ",");
+    return $return;
+  }
+
   static function agregar_rol($request,$id_sistema){
 
     $query_resp = DB::table('fw_roles')->insert([

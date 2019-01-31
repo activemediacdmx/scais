@@ -30,5 +30,6 @@ class populateUsuarios extends Seeder
         'fecha_alta'=>'2016-11-16 14:41:31',
         'fecha_mod'=>'2017-11-22 07:23:02'
       ) );
+
     }
 }

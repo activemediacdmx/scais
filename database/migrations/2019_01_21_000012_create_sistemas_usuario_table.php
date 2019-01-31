@@ -26,6 +26,7 @@ class CreateSistemasUsuarioTable extends Migration
             $table->increments('id_sistemas_usuario');
             $table->unsignedInteger('id_sistema')->nullable()->default(null);
             $table->unsignedInteger('id_usuario')->nullable()->default(null);
+            $table->integer('id_rol')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
             $table->integer('user_mod')->nullable()->default(null);
             $table->dateTime('fecha_alta')->nullable()->default(null);

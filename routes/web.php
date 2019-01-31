@@ -41,6 +41,8 @@ Route::group(['prefix' => 'systemusers'], function(){
         Route::post('/loginlogger_get/{id_sistema}', 'Systemusers@loginlogger_get');
         Route::get('/logueados/{id_sistema}', 'Systemusers@logueados');
         Route::post('/logueados_get/{id_sistema}', 'Systemusers@logueados_get');
+        Route::get('/datos_usuario/{id_usuario}/{id_sistema}', 'Systemusers@datos_usuario');
+        Route::post('/edita_rol_usuario', 'Systemusers@edita_rol_usuario');
 });
 
 Route::group(['prefix' => 'catalogo'], function(){
