@@ -23,6 +23,20 @@ class Systemroles extends Model
     }
   }
 
+  static function getIdRol($user_id, $id_sistema){
+    $id_rol = DB::table('sistemas_usuario')
+              ->where('id_sistema','=',$id_sistema)
+              ->where('id_usuario','=',$user_id)
+              ->select('id_rol')
+              ->get();
+    $array = array();
+    if(count($id_rol)>=1){
+      foreach ($id_rol as $row) {
+          return $row->id_rol;
+      }
+    }
+  }
+
   static function selectRolesSystemByTipo($cat_tiporol,$id_rol,$id_sistema,$select = NULL){
     $accesos = self::selectRolesByAccess($id_rol);
 

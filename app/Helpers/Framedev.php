@@ -35,7 +35,7 @@ class Framedev {
     }
 
     public static function setOption($arreglo,$id){
-      $opciones = "<option value=''>Seleccione...</option>";
+      $opciones = "<option disabled selected value=''>Seleccione...</option>";
       for($i=0;$i<count($arreglo);$i++){
         if($id==""){
             $opciones .=  "<option value='".$arreglo[$i]['value']."'>".ucwords($arreglo[$i]['valor'])."</option>";
