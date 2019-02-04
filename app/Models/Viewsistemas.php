@@ -35,6 +35,15 @@ class Viewsistemas extends Model
   static function ou1($id_sistema){
 
     $salida = '';
+
+    if(Helpme::tiene_permiso('Sistemas|inicializar')){
+      $salida .= '
+      <a data-function="'.$id_sistema.'" class="sys_js_fn_17 btn btn-outline-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
+        <i class="flaticon-rocket"></i>
+      </a>
+      ';
+    }
+
     if(Helpme::tiene_permiso('Sistemas|editar_sistema')){
       $salida .= '
       <a data-function="'.$id_sistema.'" class="sys_js_fn_03 btn btn-outline-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">

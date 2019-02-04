@@ -793,5 +793,19 @@ class populateMetodos extends Seeder
       'fecha_mod'=>NULL
       ));
 
+      DB::table('fw_metodos')->insert(
+      array(
+      'id_metodo'=>50,
+      'id_sistema'=>1,
+      'controlador'=>'Sistemas',
+      'metodo'=>'inicializar',
+      'nombre'=>'Inicializar/Sincronizar sistemas',
+      'descripcion'=>'Sincroniza e inicializa un sistema para ser usado por el sistema de gestión de usuarios',
+      'user_alta'=>1,
+      'user_mod'=>NULL,
+      'fecha_alta'=>'2019-01-06 13:17:07',
+      'fecha_mod'=>NULL
+      ));
+
     }
 }

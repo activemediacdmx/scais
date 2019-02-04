@@ -18,6 +18,14 @@ class Sistemas extends Controller
       $this->middleware('permiso:Sistemas|editar_sistema', ['only' => ['modal_editar_sistema','editar_sistema']]);
   }
 
+  public function sync_sistema($id_sistema){
+    return view('modales/sistemas/sync_sistema')->with('id_sistema', $id_sistema);
+  }
+
+  public function sync_sistema_do($id_sistema){
+
+  }
+
   public function modal_relacionar_sistemas($id_usuario){
 
     $user = Usuarios::datos_usuario($id_usuario);
