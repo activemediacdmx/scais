@@ -87,7 +87,7 @@ Route::group(['prefix' => 'sistemas'], function(){
         Route::get('/modal_relacionar_sistemas/{id_usuario}', 'Sistemas@modal_relacionar_sistemas');
         Route::get('/vincular_sistema/{id_usuario}/{id_sistema}/{estado}', 'Sistemas@vincular_sistema');
         Route::get('/sync_sistema/{id_sistema}', 'Sistemas@sync_sistema');
-        Route::get('/sync_sistema_do/{id_sistema}', 'Sistemas@sync_sistema_do');
+        Route::post('/sync_sistema_do/{id_sistema}', 'Sistemas@sync_sistema_do');
 });
 
 Route::group(['prefix' => 'usuarios'], function(){

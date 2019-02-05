@@ -25,8 +25,8 @@
 							</form>
             </div>
 						<div class="modal-footer">
-              <button type="button" data-function="<?=$id_sistema?>" class="btn btn-primary" id="sys_js_fn_18">Inicializar</button>
-							<button  data-dismiss="modal" class="btn btn-secondary" type="button">Cancelar</button>
+              <button type="button" data-function="<?=$id_sistema?>" class="init_sync btn btn-primary" id="sys_js_fn_18">Inicializar</button>
+							<button  data-dismiss="modal" class="close_sync btn btn-secondary" type="button">Cancelar</button>
 						</div>
         </div>
     </div>

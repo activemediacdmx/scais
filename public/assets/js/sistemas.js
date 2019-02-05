@@ -327,7 +327,7 @@ $("body").on("click", ".sys_js_fn_17", function() {
 			});
 });
 
-$("body").on("click", "#sys_js_fn_11", function() {
+$("body").on("click", "#sys_js_fn_18", function() {
 	  id_sistema = $(this).attr('data-function');
 		$.ajax({
 			headers: {
@@ -335,13 +335,21 @@ $("body").on("click", "#sys_js_fn_11", function() {
 			},
 			url: 'sistemas/sync_sistema_do/' + id_sistema,
 			type: 'POST',
+			data: $("#sync_system").serialize(),
 			dataType: 'json',
+			beforeSend: function() {
+					$("#modal_content").html('<img id="preload_gear_audit" src="img/gears.svg">');
+					$(".close_sync").css("display", "none");
+					$(".init_sync").attr("disabled", "disabled");
+			},
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
-					$('#sistemas').DataTable().ajax.reload();
+					//$('#myModal').modal('hide');
+					//$('#sistemas').DataTable().ajax.reload();
+					$(".close_sync").css("display", "");
+					$("#modal_content").html(resp_success['remote_data']);
 				}else{
-					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
+					alerta(resp_success['mensaje'],resp_success['error']);
 				}
 			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-18');}

@@ -16,11 +16,11 @@ class Webhook extends Controller
 
   static public function auth(){
 
-      $keys = Sistemas::systemKey($_SERVER ['HTTP_SYSTEM']);
+      $id_sistema = $_SERVER ['HTTP_SYSTEM_ID'];
+      $keys = Sistemas::systemKey($id_sistema);
       foreach ($keys as $key)
       {
           $app_secret =  $key->system_key;
-          $id_sistema =  $key->id_sistema;
       }
   		$webhook_signature = $_SERVER ['HTTP_SYSTEMVERIFY_SIGNATURE'];
       $remote_ip = $_SERVER ['HTTP_IP'];

@@ -27,6 +27,7 @@ class CreateSistemasTable extends Migration
             $table->unsignedInteger('cat_status_sistema')->nullable()->default(null);
             $table->string('nombre', 100)->nullable()->default(null);
             $table->text('nombre_largo')->nullable()->default(null);
+            $table->text('url')->nullable()->default(null);
             $table->longText('descripcion')->nullable()->default(null);
             $table->string('system_key')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
