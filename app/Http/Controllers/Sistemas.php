@@ -123,19 +123,15 @@ class Sistemas extends Controller
         $id_accesos[$accesos[$i]['id_permiso']] = $id_permiso;
       }
 
-
       $import_metodos = json_encode($id_metodos);
       $import_roles = json_encode($id_roles);
       $import_permisos = json_encode($id_accesos);
 
-
-
       $resp = array(
           'resp' => true ,
           'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-          'remote_data' => $import_permisos
+          'remote_data' => array_values($id_accesos)[0]
       );
-
     }
 
     print json_encode($resp);
