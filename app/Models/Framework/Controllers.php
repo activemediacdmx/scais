@@ -14,6 +14,12 @@ class Controllers extends Model
   public $timestamps = false;
 
 
+  static function getAll($metodos){
+    return Controllers::where('id_metodo','>=',$metodos[0])
+                    ->where('id_metodo','<=',$metodos[1])
+                    ->get();    
+  }
+
   static function eliminar_metodo($id_metodo){
     $sql0 = DB::table('fw_permisos')->where('id_metodo', '=', $id_metodo)->delete();
     if($sql0 >= 0){

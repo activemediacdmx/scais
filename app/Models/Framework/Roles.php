@@ -12,6 +12,12 @@ class Roles extends Model
   public $timestamps = false;
 
 
+  static function getAll($roles){
+    return Roles::where('id_rol','>=',$roles[0])
+                ->where('id_rol','<=',$roles[1])
+                ->get();
+  }
+
   static function setOption_U($arreglo){
     $opciones = "<option value='' disabled selected>Seleccione</option>";
       for($i=0;$i<count($arreglo);$i++){

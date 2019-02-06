@@ -13,6 +13,7 @@
 Route::group(['prefix' => 'webhook'], function(){
         Route::get('/', 'Webhook@index');
         Route::post('/auth', 'Webhook@auth');
+        Route::post('/sendModelsSystem', 'Webhook@sendModelsSystem');
 });
 
 Route::group(['prefix' => 'systemroles'], function(){

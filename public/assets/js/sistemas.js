@@ -21,6 +21,7 @@ $("body").on("click", "#sys_js_fn_02", function() {
 	var msj_error="";
 	if( $('#nombre').get(0).value == "" )	msj_error+='El Nombre es requerido.<br />';
 	if( $('#nombre_largo').get(0).value == "")	msj_error+='La Nombre largo es requerido.<br />';
+	if( $('#url').get(0).value == "")	msj_error+='La url base del sistema es requerido.<br />';
 	if( $('#descripcion').get(0).value == "")	msj_error+='La descripción es requerida.<br />';
 	if( !msj_error == "" ){
 		alerta('Alerta!','Campos requeridos SYS-02 - ' +  msj_error);
@@ -71,6 +72,7 @@ $("body").on("click", "#sys_js_fn_04", function() {
 	var msj_error="";
 	if( $('#nombre').get(0).value == "" )	msj_error+='El Nombre es requerido.<br />';
 	if( $('#nombre_largo').get(0).value == "")	msj_error+='La Nombre largo es requerido.<br />';
+	if( $('#url').get(0).value == "")	msj_error+='La url base del sistema es requerido.<br />';
 	if( $('#descripcion').get(0).value == "")	msj_error+='La descripción es requerida.<br />';
 	if( !msj_error == "" ){
 		alerta('Alerta!','Campos requeridos SYS-06 - ' +  msj_error);

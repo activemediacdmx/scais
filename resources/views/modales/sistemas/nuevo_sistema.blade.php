@@ -17,9 +17,13 @@
 													<label for="nombre">Nombre</label>
 													<input type="text" class="form-control" id="nombre" name="nombre" placeholder="nombre corto del sistema">
 												  </div>
-												  <div class="form-group">
+                          <div class="form-group">
 													<label for="nombre_largo">Nombre Largo</label>
 													<input type="text" class="form-control" id="nombre_largo" name="nombre_largo" placeholder="Nombre largo del sistema">
+												  </div>
+                          <div class="form-group">
+													<label for="url">URL Base (http://dominio_o_ip/)</label>
+													<input type="text" class="form-control" id="url" name="url" placeholder="URL del sistema">
 												  </div>
 												  <div class="form-group">
 													<label for="descripcion">Descripción</label>

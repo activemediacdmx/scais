@@ -14,7 +14,9 @@ class Accesos extends Model
   public $timestamps = false;
 
 
-  static function getAll(){
-    return Accesos::all();
+  static function getAll($accesos){
+    return Accesos::where('id_permiso','>=',$accesos[0])
+                  ->where('id_permiso','<=',$accesos[1])
+                  ->get();
   }
 }

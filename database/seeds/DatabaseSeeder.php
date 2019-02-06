@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call('populateUbicaciones');
         $this->call('populateSistemas');
         $this->call('populateMetodos');
-        $this->call('populateMetodosExternos');
+        //$this->call('populateMetodosExternos');
         $this->call('populateRoles');
         $this->call('populateUsuarios');
         $this->call('populateUsuariosConfig');

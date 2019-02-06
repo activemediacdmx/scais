@@ -23,6 +23,10 @@
 													<label for="nombre_largo">Nombre largo</label>
 													<input id="nombre_largo" name="nombre_largo" type="text" class="form-control" placeholder="Nombre Largo" value="<?php echo $datos['sis_data']->nombre_largo; ?>">
 												  </div>
+                          <div class="form-group">
+													<label for="url">URL Base (http://dominio_o_ip/)</label>
+													<input type="text" class="form-control" id="url" name="url" placeholder="URL del sistema" value="<?php echo $datos['sis_data']->url; ?>">
+												  </div>
 												  <div class="form-group">
 													<label for="descripcion">Descripción</label>
 													<textarea id="descripcion" name="descripcion" class="form-control" placeholder="Descripción" ><?php echo $datos['sis_data']->descripcion; ?></textarea>

@@ -76,6 +76,7 @@ class Sistemas extends Model
     if(null !== ($request->input('nombre'))) { $store->nombre = $request->input('nombre'); }
     if(null !== ($request->input('nombre_largo'))) { $store->nombre_largo = $request->input('nombre_largo'); }
     if(null !== ($request->input('descripcion'))) { $store->descripcion = $request->input('descripcion'); }
+    if(null !== ($request->input('url'))) { $store->url = $request->input('url'); }
 
     $store->system_key = strtoupper(Helpme::token(40));
 
@@ -102,6 +103,7 @@ class Sistemas extends Model
                 'nombre'=> $request->input('nombre'),
                 'nombre_largo'=> $request->input('nombre_largo'),
                 'descripcion'=> $request->input('descripcion'),
+                'url'=> $request->input('url'),
                 'system_key'=> strtoupper(Helpme::token(40)),
                 'cat_status_sistema'=> $request->input('cat_status_sistema'),
                 'user_mod'=> $_SESSION['id_usuario'],
