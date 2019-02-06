@@ -49,7 +49,7 @@ class Sistemas extends Controller
       $headers = array(
          'systemverify-Signature:'.$sign,
          'system:'.$system,
-         'system_id:'.$system_id,
+         'system-id:'.$system_id,
          'ip:'.$_SERVER['REMOTE_ADDR']
       );
 
@@ -71,7 +71,7 @@ class Sistemas extends Controller
 
       $metodos = json_decode($post['metodos'], true);
       $roles = json_decode($post['roles'], true);
-      $permisos = json_decode($post['permisos'], true);
+      $accesos = json_decode($post['accesos'], true);
 
 
       for($i=0; $i < count($metodos); $i++){
@@ -109,31 +109,31 @@ class Sistemas extends Controller
       }
 
 
-      for($i=0; $i < count($permisos); $i++){
+      for($i=0; $i < count($accesos); $i++){
         $id_permiso = DB::table('fw_permisos')->insertGetId(
             [
-              'id_metodo'=>$id_metodos[$permisos[$i]['id_metodo']],
-              'id_rol'=>$id_roles[$permisos[$i]['id_rol']],
-              'user_alta'=>$permisos[$i]['user_alta'],
-              'user_mod'=>$permisos[$i]['user_mod'],
-              'fecha_alta'=>$permisos[$i]['fecha_alta'],
-              'fecha_mod'=>$permisos[$i]['fecha_mod']
+              'id_metodo'=>$id_metodos[$accesos[$i]['id_metodo']],
+              'id_rol'=>$id_roles[$accesos[$i]['id_rol']],
+              'user_alta'=>$accesos[$i]['user_alta'],
+              'user_mod'=>$accesos[$i]['user_mod'],
+              'fecha_alta'=>$accesos[$i]['fecha_alta'],
+              'fecha_mod'=>$accesos[$i]['fecha_mod']
             ]
         );
-        $id_permisos[$permisos[$i]['id_permiso']] = $id_permiso;
+        $id_accesos[$accesos[$i]['id_permiso']] = $id_permiso;
       }
 
 
       $import_metodos = json_encode($id_metodos);
       $import_roles = json_encode($id_roles);
-      $import_permisos = json_encode($id_permisos);
+      $import_permisos = json_encode($id_accesos);
 
 
 
       $resp = array(
           'resp' => true ,
           'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-          'remote_data' => $import_metodos
+          'remote_data' => $import_permisos
       );
 
     }
