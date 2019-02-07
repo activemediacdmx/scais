@@ -263,5 +263,6 @@ class populateCatalogo extends Seeder
       'fecha_alta'=>'2019-01-06 09:50:13',
       'fecha_mod'=>NULL
       ));
+
     }
 }

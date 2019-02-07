@@ -347,11 +347,7 @@ $("body").on("click", "#sys_js_fn_18", function() {
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					$(".close_sync").css("display", "");
-					if(resp_success['remote_data'] == 'HTTP/1.1 200 OK'){
-						$("#modal_content").html('¡ La inicialización finalizo con éxito !');
-					}else{
-						$("#modal_content").html('¡ Fallo la inicialización notifique a su administrador del sistema !');
-					}
+					$("#modal_content").html('La sincronización finalizó de manera correcta ultimos id\'s: ' + resp_success['last_id_metodo'] +','+ resp_success['last_id_role'] +','+ resp_success['last_id_permiso']);
 				}else{
 					alerta(resp_success['mensaje'],resp_success['error']);
 				}

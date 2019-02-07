@@ -54,12 +54,17 @@ class Sistemas extends Model
   }
 
   static 	function getAccesos($id_sistema, $id_usuario){
-      $id_sistema = intval($id_sistema);
-      $id_usuario = intval($id_usuario);
       return DB::table('sistemas_usuario')
                 ->where('id_sistema','=', $id_sistema)
                 ->where('id_usuario','=', $id_usuario)
                 ->count();
+  }
+
+  static 	function getUserSysData($id_sistema, $id_usuario){
+      return DB::table('sistemas_usuario')
+                ->where('id_sistema','=', $id_sistema)
+                ->where('id_usuario','=', $id_usuario)
+                ->get();
   }
 
   static function listado_sistemas_SINUSAR(){

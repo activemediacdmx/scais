@@ -19,6 +19,70 @@ class Sistemas extends Controller
       $this->middleware('permiso:Sistemas|editar_sistema', ['only' => ['modal_editar_sistema','editar_sistema']]);
   }
 
+  public function vincular_sistema($id_usuario, $id_sistema, $estado){
+     $dataRelacion = ModelSistemas::getUserSysData($id_sistema, $id_usuario);
+
+     $cat_status =  $dataRelacion[0]->cat_status;
+     $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
+         dd($id_sistemas_usuario);
+     //self::setRemoteUser($id_usuario, $id_sistema, $estado);
+     //print json_encode(ModelSistemas::setear_permiso($id_usuario, $id_sistema, $estado));
+  }
+
+  public function setRemoteUser($id_usuario, $id_sistema, $estado){
+    $keys = ModelSistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    $post = self::setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
+
+    $result = json_decode($result);
+
+    $resp = array(
+        'resp' => true ,
+        'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
+        'last_id_metodo' => $result->last_id_metodo,
+        'last_id_role' => $result->last_id_role,
+        'last_id_permiso' => $result->last_id_permiso
+    );
+  }
+
+  private function setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
+
+    $post_send = json_encode(array('proceso' => 'syncuser'));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $user_data = Usuarios::datos_usuario($id_usuario);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'estado:'.$estado,
+       'userdata:'.$user_data
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/syncuser');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\n",$res);
+    $status = $data[0];
+    return  $data[11];
+  }
+
   public function sync_sistema($id_sistema){
     return view('modales/sistemas/sync_sistema')->with('id_sistema', $id_sistema);
   }
@@ -44,10 +108,14 @@ class Sistemas extends Controller
 
       $result = self::populateRemote($app_url, $app_secret, $app_name, $id_sistema, $ids_inserts);
 
+      $result = json_decode($result);
+
       $resp = array(
           'resp' => true ,
           'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-          'remote_data' => $result
+          'last_id_metodo' => $result->last_id_metodo,
+          'last_id_role' => $result->last_id_role,
+          'last_id_permiso' => $result->last_id_permiso
       );
     }
 
@@ -78,7 +146,7 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\n",$res);
     $status = $data[0];
-    return  $data[0];
+    return  $data[14];
     //return $res;
 
 
@@ -201,10 +269,6 @@ class Sistemas extends Controller
 
     ];
     return view('modales/sistemas/relacionar_sistemas')->with('datos', $datos);
-  }
-
-  public function vincular_sistema($id_usuario, $id_sistema, $estado){
-     print json_encode(ModelSistemas::setear_permiso($id_usuario, $id_sistema, $estado));
   }
 
   public function index()

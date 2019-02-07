@@ -27,6 +27,7 @@ class CreateSistemasUsuarioTable extends Migration
             $table->unsignedInteger('id_sistema')->nullable()->default(null);
             $table->unsignedInteger('id_usuario')->nullable()->default(null);
             $table->unsignedInteger('id_rol')->nullable()->default(null);
+            $table->unsignedInteger('cat_status')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
             $table->integer('user_mod')->nullable()->default(null);
             $table->dateTime('fecha_alta')->nullable()->default(null);
@@ -37,6 +38,8 @@ class CreateSistemasUsuarioTable extends Migration
             $table->index(["id_sistema"], 'fk_sistemas_usuario_sistemas_1');
 
             $table->index(["id_rol"], 'fk_sistemas_usuario_roles_1');
+
+            $table->index(["cat_status"], 'fk_sistemas_usuario_catalogo_1');
 
 
             $table->foreign('id_usuario', 'fk_sistemas_usuario_fw_usuarios_1')
@@ -51,6 +54,11 @@ class CreateSistemasUsuarioTable extends Migration
 
             $table->foreign('id_rol', 'fk_sistemas_usuario_roles_1')
                 ->references('id_rol')->on('fw_roles')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+
+            $table->foreign('cat_status', 'fk_sistemas_usuario_catalogo_1')
+                ->references('id_cat')->on('cm_catalogo')
                 ->onDelete('restrict')
                 ->onUpdate('restrict');
 
