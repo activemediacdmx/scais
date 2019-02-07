@@ -78,8 +78,8 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\n",$res);
     $status = $data[0];
-    //return  $data[11];
-    return $res;
+    return  $data[0];
+    //return $res;
 
 
   }

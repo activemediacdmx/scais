@@ -340,16 +340,18 @@ $("body").on("click", "#sys_js_fn_18", function() {
 			data: $("#sync_system").serialize(),
 			dataType: 'json',
 			beforeSend: function() {
-					$("#modal_content").html('<img id="preload_gear_audit" src="img/gears.svg">');
+					$("#modal_content").html('<center><img id="preload_gear_audit" src="img/gears.svg"></center>');
 					$(".close_sync").css("display", "none");
 					$(".init_sync").attr("disabled", "disabled");
 			},
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					//$('#myModal').modal('hide');
-					//$('#sistemas').DataTable().ajax.reload();
 					$(".close_sync").css("display", "");
-					$("#modal_content").html(resp_success['remote_data']);
+					if(resp_success['remote_data'] == 'HTTP/1.1 200 OK'){
+						$("#modal_content").html('¡ La inicialización finalizo con éxito !');
+					}else{
+						$("#modal_content").html('¡ Fallo la inicialización notifique a su administrador del sistema !');
+					}
 				}else{
 					alerta(resp_success['mensaje'],resp_success['error']);
 				}
