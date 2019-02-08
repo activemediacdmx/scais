@@ -29,29 +29,30 @@ class Sistemas extends Model
                     ->get();
   }
 
-  static function setear_permiso($id_usuario, $id_sistema, $estado){
-    if($estado == 'true'){
-        $query_resp = DB::table('sistemas_usuario')->insert([
-          [
-            'id_sistema' => $id_sistema,
-            'id_usuario' => $id_usuario,
-            'user_alta' => $_SESSION['id_usuario'],
-            'fecha_alta' => date("Y-m-d H:i:s")
-          ]
-      ]);
-    }else if ($estado == 'false'){
-      $query_resp = DB::table('sistemas_usuario')
-                          ->where('id_sistema', '=', $id_sistema)
-                          ->where('id_usuario', '=', $id_usuario)
-                          ->delete();
-    }
-    if($query_resp){
-      $respuesta = array('resp' => true , 'mensaje' => 'Se actualizo el acceso al sistema de manera satisfactoria.' );
-    }else{
-      $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Ocurrio un error mientras se ejectutaba la query.' );
-    }
-    return $respuesta;
+  static function setear_permiso($id_usuario, $id_sistema){
+
+    return DB::table('sistemas_usuario')->insertGetId(
+        [
+          'id_sistema' => $id_sistema,
+          'id_usuario' => $id_usuario,
+          'cat_status' => 16,
+          'user_alta' => $_SESSION['id_usuario'],
+          'fecha_alta' => date("Y-m-d H:i:s")
+        ]
+    );
   }
+
+  static function update_permiso($id_usuario, $id_sistema, $id){
+
+        return DB::table('sistemas_usuario')
+                ->where('id_sistema', $id_sistema)
+                ->where('id_usuario', $id_usuario)
+                ->update([
+                    'cat_status' => $id
+                ]);
+
+  }
+
 
   static 	function getAccesos($id_sistema, $id_usuario){
       return DB::table('sistemas_usuario')

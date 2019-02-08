@@ -34,8 +34,59 @@ class Systemusers extends Controller
   }
 
   public function edita_rol_usuario(Request $request){
+
+      $id_usuario = $request->input('id_usuario');
+      $id_sistema = $request->input('id_sistema');
+      $id_rol = $request->input('id_rol');
+      $data = self::updateRemoteUser($id_usuario, $id_sistema, $id_rol);
+
       print json_encode(ModelSystemusers::edita_rol_usuario($request));
   }
+
+  public function updateRemoteUser($id_usuario, $id_sistema, $id_rol){
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $id_rol);
+  }
+
+  private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $id_rol){
+
+    $post_send = json_encode(array('proceso' => 'updateuserrol'));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'id-rol:'.$id_rol,
+       'id-usuario:'.$id_usuario
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/updateuserrol');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    //return  $data[9];
+    return $res;
+  }
+
+
   public function datos_usuario($user_id, $id_sistema)
   {
       $usuario = Usuarios::datos_usuario($user_id);

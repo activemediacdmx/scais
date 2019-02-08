@@ -22,11 +22,83 @@ class Sistemas extends Controller
   public function vincular_sistema($id_usuario, $id_sistema, $estado){
      $dataRelacion = ModelSistemas::getUserSysData($id_sistema, $id_usuario);
 
-     $cat_status =  $dataRelacion[0]->cat_status;
-     $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
-         dd($id_sistemas_usuario);
-     //self::setRemoteUser($id_usuario, $id_sistema, $estado);
-     //print json_encode(ModelSistemas::setear_permiso($id_usuario, $id_sistema, $estado));
+     if(count($dataRelacion) == 0){
+          $id_sistemas_usuario = ModelSistemas::setear_permiso($id_usuario, $id_sistema);
+          $cat_status =  13;
+     }else{
+          $cat_status =  $dataRelacion[0]->cat_status;
+          $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
+     }
+
+     if($cat_status == 13){
+       //inserta usuario remoto
+       $data = self::setRemoteUser($id_usuario, $id_sistema, $estado);
+     }else{
+       //actualiza usuario remoto
+       $data = self::updateRemoteUser($id_usuario, $id_sistema, $estado);
+     }
+
+     if($data){
+       //set status local
+       if($estado == true){
+         ModelSistemas::update_permiso($id_usuario, $id_sistema, 3);
+       }else{
+         ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
+       }
+
+     }
+
+
+     $resp = array(
+         'resp' => true ,
+         'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
+         'data' => $data
+     );
+     return json_encode($resp);
+
+  }
+
+  public function updateRemoteUser($id_usuario, $id_sistema, $estado){
+    $keys = ModelSistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
+  }
+
+  private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
+
+    $post_send = json_encode(array('proceso' => 'updateuser'));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'estado:'.$estado,
+       'id-usuario:'.$id_usuario
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/updateuser');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    //return  $data[9];
+    return $res;
   }
 
   public function setRemoteUser($id_usuario, $id_sistema, $estado){
@@ -39,25 +111,15 @@ class Sistemas extends Controller
         $app_url =  $key->url;
     }
 
-    $post = self::setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
-
-    $result = json_decode($result);
-
-    $resp = array(
-        'resp' => true ,
-        'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-        'last_id_metodo' => $result->last_id_metodo,
-        'last_id_role' => $result->last_id_role,
-        'last_id_permiso' => $result->last_id_permiso
-    );
+    return  self::setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
   }
 
   private function setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
 
-    $post_send = json_encode(array('proceso' => 'syncuser'));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+    $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
 
-    $user_data = Usuarios::datos_usuario($id_usuario);
+    $post_send = json_encode(array('proceso' => 'syncuser', 'userdata' => $user_data));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
 
     $headers = array(
        'systemverify-Signature:'.$sign,
@@ -78,9 +140,10 @@ class Sistemas extends Controller
     curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
 
     $res = curl_exec($curl);
-    $data = explode("\n",$res);
+    $data = explode("\r\n",$res);
     $status = $data[0];
-    return  $data[11];
+    //return  $data[9];
+    return $res;
   }
 
   public function sync_sistema($id_sistema){
