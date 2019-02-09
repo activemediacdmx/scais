@@ -167,6 +167,8 @@ class Usuarios extends Controller
 
         if($perfil['avatar']){
             $avatar = Helpme::duplicatePublic($perfil['avatar'],'perfiles');
+        }else{
+           $avatar = '';
         }
 
       $rol = Roles::rol();

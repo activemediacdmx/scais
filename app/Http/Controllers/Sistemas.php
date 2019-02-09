@@ -97,8 +97,8 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    //return  $data[9];
-    return $res;
+    return  $data[10];
+    //return $res;
   }
 
   public function setRemoteUser($id_usuario, $id_sistema, $estado){
@@ -142,8 +142,8 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    //return  $data[9];
-    return $res;
+    return  $data[10];
+    //return $res;
   }
 
   public function sync_sistema($id_sistema){
@@ -168,7 +168,6 @@ class Sistemas extends Controller
       $post = self::getModelosRemotos($app_url, $app_secret, $app_name, $id_sistema);
       $ids_inserts = self::populateImports($post, $id_sistema);
       //{ids_metodos: [2067, 2108], ids_roles: [50, 50], ids_permisos: [2067, 2108]}
-
       $result = self::populateRemote($app_url, $app_secret, $app_name, $id_sistema, $ids_inserts);
 
       $result = json_decode($result);
@@ -209,9 +208,8 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\n",$res);
     $status = $data[0];
-    return  $data[14];
+    return  $data[15];
     //return $res;
-
 
   }
 
@@ -239,7 +237,7 @@ class Sistemas extends Controller
     $res = curl_exec($curl);
     $data = explode("\n",$res);
     $status = $data[0];
-    return  $data[11];
+    return  $data[12];
   }
 
   private function populateImports($post, $system_id){
