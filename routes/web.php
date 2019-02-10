@@ -121,6 +121,7 @@ Route::group(['prefix' => 'login'], function(){
         Route::any('/recuperar_datos', 'Login@recuperar_datos');
         Route::get('/403', 'Login@error403');
         Route::get('/error404', 'Login@error404');
+        Route::get('/error500', 'Login@error500');
         Route::get('/tyc', 'Login@tyc');
         Route::get('/pass_chge', 'Login@pass_chge');
         Route::get('/lockSession', 'Login@lockSession');

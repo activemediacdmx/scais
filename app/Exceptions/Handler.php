@@ -44,8 +44,23 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
-    {
-        return parent::render($request, $exception);
-    }
+
+
+     /*public function render($request, Exception $exception)
+     {
+         return parent::render($request, $exception);
+     }*/
+
+     public function render($request, Exception $e)
+     {
+         $exception = \Symfony\Component\Debug\Exception\FlattenException::create($e);
+         $statusCode = $exception->getStatusCode($exception);
+
+         if (env('APP_DEBUG') == FALSE && $statusCode == 500 && $e instanceof ValidationException != TRUE) {
+             return response()->view('plantilla/500_full');
+         } else {
+             return parent::render($request, $e);
+         }
+     }
+
 }

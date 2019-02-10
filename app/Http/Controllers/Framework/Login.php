@@ -95,7 +95,11 @@ class Login extends Controller
     {
         $usuario = Usuarios::datos_usuario($_SESSION['id_usuario']);
         $perfil  = Usuarios::perfil_usuario($_SESSION['id_usuario']);
-        if($perfil['avatar']){$avatar = Helpme::duplicatePublic($perfil['avatar'],'perfiles');}
+        if($perfil['avatar']){
+          $avatar = Helpme::duplicatePublic($perfil['avatar'],'perfiles');
+        }else{
+          $avatar = '';
+        }
         $usuario_menu_top = Usuarios::datos_usuario($_SESSION['id_usuario']);
         $correo = $_SESSION['correo'];
         $username = $_SESSION['usuario'];
