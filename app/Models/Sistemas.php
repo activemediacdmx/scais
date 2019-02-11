@@ -68,14 +68,6 @@ class Sistemas extends Model
                 ->get();
   }
 
-  static function listado_sistemas_SINUSAR(){
-    $dataTable = new DT(
-      Sistemas::where('id_sistema', '!=', 1),
-      ['id_sistema', 'nombre', 'nombre_largo', 'descripcion']
-    );
-    return $dataTable->make();
-  }
-
   static function agregar_sistema($request){
     $store = new Sistemas;
 

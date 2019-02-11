@@ -158,7 +158,6 @@ class Roles extends Model
               ->where('id_rol','=',$rol)
               ->select('descripcion')
               ->get();
-    $array = array();
     if(count($descripcion)>=1){
       foreach ($descripcion as $row) {
           return $row->descripcion;
@@ -336,4 +335,26 @@ class Roles extends Model
     $return = rtrim($return, ",");
     return $return;
   }
+
+  static function getToken($rol){
+    $token = DB::table('fw_roles')
+              ->where('id_rol','=',$rol)
+              ->select('token')
+              ->get();
+    if(count($token)>=1){
+      foreach ($token as $row) {
+          return $row->token;
+      }
+    }
+  }
+
+  static function getDataRol($id_rol){
+    return Roles::all()
+              ->where('id_rol','=',$id_rol);
+  }
+
+  static function getAllDB(){
+    return Roles::all();
+  }
+
 }

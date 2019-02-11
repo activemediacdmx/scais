@@ -25,6 +25,7 @@ class populateUsuarios extends Seeder
         'id_ubicacion'=>1,
         'cat_pass_chge'=>11,
         'cat_status'=>3,
+        'token'=>'okk1fSVP1RpcZ2SVOhJXwBUKdRbmrFyl',
         'user_alta'=>1,
         'user_mod'=>1,
         'fecha_alta'=>'2016-11-16 14:41:31',

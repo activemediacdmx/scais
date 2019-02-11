@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Helpme;
+use App\Models\Roles;
 use DB;
 
 class Login extends Model
@@ -255,7 +256,7 @@ class Login extends Model
               ->join('fw_usuarios_config AS uc', 'uc.id_usuario', '=', 'u.id_usuario')
               ->join('sistemas_usuario AS su', 'su.id_usuario', '=', 'u.id_usuario')
               ->join('sistemas AS s', 'su.id_sistema', '=', 's.id_sistema')
-              ->select('u.id_usuario', 'su.id_rol', 'u.usuario', 'u.id_ubicacion', 'u.correo', 'uc.aceptar_tyc', 'u.cat_pass_chge')
+              ->select('u.id_usuario', 'su.id_rol', 'u.usuario', 'u.id_ubicacion', 'u.correo', 'uc.aceptar_tyc', 'u.cat_pass_chge', 'token')
               ->where('u.usuario', '=', $usuario)
               ->where('u.password', '=', $password_md5)
               ->where('u.cat_status', '=', 3)
@@ -275,6 +276,8 @@ class Login extends Model
             $array[3]['tyc']=$row->aceptar_tyc;
             $array[3]['pass_chge']=$row->cat_pass_chge;
             $array[3]['token'] = Helpme::token(62);
+            $array[3]['user_token']=$row->token;
+            $array[3]['rol_token']=Roles::getToken($row->id_rol);
             $array[0]=array('resp'=>"acceso_correcto");
         }
 

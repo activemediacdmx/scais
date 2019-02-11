@@ -35,6 +35,7 @@ class CreateFwUsuariosTable extends Migration
             $table->unsignedInteger('id_ubicacion')->nullable()->default(null);
             $table->unsignedInteger('cat_pass_chge')->nullable()->default(null);
             $table->unsignedInteger('cat_status')->nullable()->default(null);
+            $table->string('token')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
             $table->integer('user_mod')->nullable()->default(null);
             $table->dateTime('fecha_alta')->nullable()->default(null);

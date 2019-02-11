@@ -11,7 +11,6 @@ class Usuarios extends Model
   protected $primaryKey = 'id_usuario';
   public $timestamps = false;
 
-
   static function usuarios_bloqueados(){
     return DB::table('fw_usuarios')->where('cat_status','=',9)->count();
   }
@@ -23,10 +22,11 @@ class Usuarios extends Model
             ->where('id_usuario', $id_usuario)
             ->update([
                 'cat_status'=> 5,
+                'token'=> Helpme::token(32),
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
     if($query_resp){
-      $respuesta = array('resp' => true , 'mensaje' => 'La baja del usuario se realizó de manera correcta.' );
+      $respuesta = array('resp' => true , 'mensaje' => 'La baja del usuario se realizó de manera correcta.');
     }else{
       $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al dar de baja al usuario.' );
     }
@@ -134,9 +134,9 @@ class Usuarios extends Model
             ->where('id_usuario', $user)
             ->update([
                 'cat_pass_chge'=> $stat,
+                'token'=> Helpme::token(32),
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
-
     return $result;
   }
 
@@ -206,6 +206,7 @@ class Usuarios extends Model
                               'nombres'=> $request->input('nombres'),
                               'apellido_paterno'=> $request->input('apellido_paterno'),
                               'apellido_materno'=> $request->input('apellido_materno'),
+                              'token'=> Helpme::token(32),
                               'user_mod'=> $_SESSION['id_usuario']
                           ]);
 
@@ -233,6 +234,7 @@ class Usuarios extends Model
                           ->where('id_usuario', $id_usuario)
                           ->update([
                               'password' => md5($pass),
+                              'token'=> Helpme::token(32),
                               'user_mod'=>$mod_user
                           ]);
     return $query_resp;
@@ -318,6 +320,7 @@ class Usuarios extends Model
               'nombres' => $request->input('nombres'),
               'apellido_paterno' => $request->input('apellido_paterno'),
               'apellido_materno' => $request->input('apellido_materno'),
+              'token'=> Helpme::token(32),
               'user_alta' => $_SESSION['id_usuario'],
               'fecha_alta' => date("Y-m-d H:i:s")
           ]

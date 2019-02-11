@@ -167,7 +167,6 @@ class Sistemas extends Controller
 
       $post = self::getModelosRemotos($app_url, $app_secret, $app_name, $id_sistema);
       $ids_inserts = self::populateImports($post, $id_sistema);
-      //{ids_metodos: [2067, 2108], ids_roles: [50, 50], ids_permisos: [2067, 2108]}
       $result = self::populateRemote($app_url, $app_secret, $app_name, $id_sistema, $ids_inserts);
 
       $result = json_decode($result);
@@ -238,6 +237,7 @@ class Sistemas extends Controller
     $data = explode("\n",$res);
     $status = $data[0];
     return  $data[12];
+    //return $res;
   }
 
   private function populateImports($post, $system_id){
