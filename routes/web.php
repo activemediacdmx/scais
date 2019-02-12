@@ -146,5 +146,9 @@ Route::group(['prefix' => 'site'], function(){
         Route::get('/', 'Site@index');
 });
 
+Route::group(['prefix' => 'developer'], function(){
+        Route::any('/', 'Developer@index');
+        Route::any('/test', 'Developer@test');
+});
 
 Route::fallback('Login@error404');

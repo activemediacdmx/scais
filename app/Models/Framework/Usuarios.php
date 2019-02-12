@@ -2,6 +2,8 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Systemsystemusers as SysUsr;
+use App\Models\Sistemas;
 use Helpme;
 use DB;
 
@@ -10,6 +12,64 @@ class Usuarios extends Model
   protected $table = 'fw_usuarios';
   protected $primaryKey = 'id_usuario';
   public $timestamps = false;
+
+  static function getSysOfUser($id_usuario){
+      $sistemas = SysUsr::getSysOfUser($id_usuario);
+      foreach($sistemas as $sistema){
+        self::updateRemoteUser($id_usuario, $sistema->id_sistema);
+      }
+  }
+
+  public function updateRemoteUser($id_usuario, $id_sistema){
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
+  }
+
+  private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
+
+    $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
+
+    $post_send = json_encode(array('proceso' => 'updateuserdata', 'userdata' => $user_data));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'userdata:'.$user_data
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/updateuserdata');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    return  $data[10];
+    //return $res;
+  }
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
   static function usuarios_bloqueados(){
     return DB::table('fw_usuarios')->where('cat_status','=',9)->count();
@@ -26,6 +86,7 @@ class Usuarios extends Model
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
     if($query_resp){
+      self::updateRemoteUser($id_usuario);
       $respuesta = array('resp' => true , 'mensaje' => 'La baja del usuario se realizó de manera correcta.');
     }else{
       $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al dar de baja al usuario.' );
@@ -137,6 +198,7 @@ class Usuarios extends Model
                 'token'=> Helpme::token(32),
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
+    self::updateRemoteUser($id_usuario);
     return $result;
   }
 
@@ -211,6 +273,7 @@ class Usuarios extends Model
                           ]);
 
     if($query_resp){
+      self::updateRemoteUser($id_usuario);
       self::updateIngreso($request->input('fecha_ingreso'),$request->input('id_usuario'));
       $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
     }else{
@@ -237,6 +300,7 @@ class Usuarios extends Model
                               'token'=> Helpme::token(32),
                               'user_mod'=>$mod_user
                           ]);
+    self::updateRemoteUser($id_usuario);
     return $query_resp;
   }
 
@@ -330,6 +394,7 @@ class Usuarios extends Model
       self::updateIngreso($request->input('fecha_ingreso'),$id_usuario);
 
       if($id_usuario){
+        self::updateRemoteUser($id_usuario);
         $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.', 'id_rol' =>  $request->input('id_rol'), 'id_usuario' => $id_usuario);
       }else{
         $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
