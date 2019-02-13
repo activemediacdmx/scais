@@ -20,7 +20,7 @@ class Usuarios extends Model
       }
   }
 
-  public function updateRemoteUser($id_usuario, $id_sistema){
+  static public function updateRemoteUser($id_usuario, $id_sistema){
     $keys = Sistemas::systemKey($id_sistema);
 
     foreach ($keys as $key)
@@ -33,7 +33,7 @@ class Usuarios extends Model
     return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
   }
 
-  private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
+  static private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
 
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
 
@@ -60,8 +60,7 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    return  $data[10];
-    //return $res;
+    return $data[10];
   }
 
 
