@@ -13,10 +13,14 @@ class Usuarios extends Model
   protected $primaryKey = 'id_usuario';
   public $timestamps = false;
 
+
   static function getSysOfUser($id_usuario){
       $sistemas = SysUsr::getSysOfUser($id_usuario);
       foreach($sistemas as $sistema){
-        self::updateRemoteUser($id_usuario, $sistema->id_sistema);
+        SysUsr::updateRelationStatus($id_usuario, $id_sistema, 17);
+
+        if(self::updateRemoteUser($id_usuario, $sistema->id_sistema))
+          SysUsr::updateRelationStatus($id_usuario, $id_sistema, 3);
       }
   }
 
@@ -30,7 +34,9 @@ class Usuarios extends Model
         $app_url =  $key->url;
     }
 
-    return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
+    $updated =  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
+    $valid = ($updated >= 1)?true:false;
+    return $valid;
   }
 
   static private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
@@ -62,13 +68,6 @@ class Usuarios extends Model
     $status = $data[0];
     return $data[10];
   }
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
 
   static function usuarios_bloqueados(){
     return DB::table('fw_usuarios')->where('cat_status','=',9)->count();

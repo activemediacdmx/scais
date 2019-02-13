@@ -12,6 +12,92 @@ class Roles extends Model
   public $timestamps = false;
 
 
+  static public function changeToken($id_rol){
+    DB::table('fw_roles')
+        ->where('id_rol', $id_rol)
+        ->update([
+            'token'=> Helpme::token(32),
+            'user_mod'=> $_SESSION['id_usuario']
+        ]);
+    self::getSysOfRoles($id_rol);
+
+  }
+
+  static function getSysOfRoles($id_rol){
+      $roles = SysUsr::getSysOfRoles($id_rol);
+      foreach($roles as $role){
+        SysUsr::updateRelationStatus($id_rol, $id_sistema, 18);
+
+        if(self::updateRemoteRole($id_rol, $role->id_sistema))
+          SysUsr::updateRelationStatus($id_rol, $id_sistema, 3);
+      }
+  }
+
+  static public function updateRemoteRole($id_rol, $id_sistema){
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    $updated =  self::updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema);
+    $valid = ($updated >= 1)?true:false;
+    return $valid;
+  }
+
+  static private function updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema){
+
+    $rol_data = json_encode(Roles::getDataRol($id_rol));
+
+    $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'roldata:'.$rol_data
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/updateroldata');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    return $data[10];
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   static function getAll($roles){
     return Roles::where('id_rol','>=',$roles[0])
                 ->where('id_rol','<=',$roles[1])
@@ -100,14 +186,6 @@ class Roles extends Model
     return $respuesta;
   }
 
-  static public function changeToken($id_rol){
-    $query_resp = DB::table('fw_roles')
-            ->where('id_rol', $id_rol)
-            ->update([
-                'token'=> Helpme::token(32),
-                'user_mod'=> $_SESSION['id_usuario']
-            ]);
-  }
   static function setear_permiso($role,$metodo,$estado){
     if($estado == 'true'){
         $query_resp = DB::table('fw_permisos')->insert([
