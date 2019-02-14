@@ -35,7 +35,7 @@ class Sistemas extends Model
         [
           'id_sistema' => $id_sistema,
           'id_usuario' => $id_usuario,
-          'cat_status' => 16,
+          'cat_status' => 13,
           'user_alta' => $_SESSION['id_usuario'],
           'fecha_alta' => date("Y-m-d H:i:s")
         ]
@@ -58,6 +58,7 @@ class Sistemas extends Model
       return DB::table('sistemas_usuario')
                 ->where('id_sistema','=', $id_sistema)
                 ->where('id_usuario','=', $id_usuario)
+                ->where('cat_status','=', 3)
                 ->count();
   }
 

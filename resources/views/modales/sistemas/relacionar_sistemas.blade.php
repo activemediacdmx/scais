@@ -15,7 +15,8 @@
 											<div class="col-md-12">
                           <?php
                               for($i=0;$i < count($datos['lista_sistemas']); $i++){
-            										if($datos['acceso'][$i] == 1){$checked_ac = 'checked';}else{$checked_ac = '';}
+            										if($datos['acceso'][$i] == 1){$checked_ac = 'checked';}else{$checked_ac = '';
+                              }
                           ?>
                           <div class="m-form__group form-group row">
                               <label class="col-9 col-form-label" for="chk_change_pass">
@@ -25,7 +26,12 @@
                               <div class="col-3">
                                 <span class="m-switch m-switch--outline m-switch--icon m-switch--info">
                                   <label>
-                                    <input id="system_access_<?=$datos['lista_sistemas'][$i]->id_sistema?>" name="system_access_<?=$datos['lista_sistemas'][$i]->id_sistema?>"  type="checkbox" <?php echo $checked_ac; ?>   onchange='vincular_sistema(<?=$datos['lista_sistemas'][$i]->id_sistema?>)'>
+                                    <input
+                                    id="system_access_<?=$datos['lista_sistemas'][$i]->id_sistema?>"
+                                    name="system_access_<?=$datos['lista_sistemas'][$i]->id_sistema?>"
+                                    type="checkbox"
+                                    <?php echo $checked_ac; ?>
+                                    onchange='vincular_sistema(<?=$datos['lista_sistemas'][$i]->id_sistema?>)'>
                                     <span></span>
                                   </label>
                                 </span>

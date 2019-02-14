@@ -27,6 +27,14 @@ class Systemsystemusers extends Model
     return $i->id_rol;
   }
 
+  static function getCatStatusOfUserSys($id_usuario, $id_sistema){
+    $i =  Systemsystemusers::select('cat_status')
+                    ->where('id_usuario','=',$id_usuario)
+                    ->where('id_sistema','=',$id_sistema)
+                    ->first();
+    return $i->cat_status;
+  }
+
   static function updateRelationStatus($id_usuario, $id_sistema, $cat_status){
     return Systemsystemusers::where('id_usuario', $id_usuario)
             ->where('id_sistema', $id_sistema)

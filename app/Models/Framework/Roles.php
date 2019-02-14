@@ -2,6 +2,8 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Systemsystemusers as SysUsr;
+use App\Models\Usuarios;
 use Helpme;
 use DB;
 
@@ -33,68 +35,13 @@ class Roles extends Model
   }
 
   static public function updateRemoteRole($id_rol, $id_sistema){
-    $keys = Sistemas::systemKey($id_sistema);
 
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
-    $updated =  self::updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema);
+    $updated =  Usuarios::updateRemoteRole($id_rol, $id_sistema);
     $rest = substr($updated, -1, 1);
     $valid = ($updated >= 1)?true:false;
     return $valid;
+    
   }
-
-  static private function updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema){
-
-    $rol_data = json_encode(Roles::getDataRol($id_rol)[1]);
-    $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
-       'roldata:'.$rol_data
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/updateroldata');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
-    return $data[10];
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   static function getAll($roles){

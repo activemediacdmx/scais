@@ -14,17 +14,11 @@ class Usuarios extends Model
   public $timestamps = false;
 
 
-  static function getSysOfUser($id_usuario){
-      $sistemas = SysUsr::getSysOfUser($id_usuario);
-      foreach($sistemas as $sistema){
-        SysUsr::updateRelationStatus($id_usuario, $id_sistema, 17);
+  /********************************************************************************************************/
+  /********************************************************************************************************/
 
-        if(self::updateRemoteUser($id_usuario, $sistema->id_sistema))
-          SysUsr::updateRelationStatus($id_usuario, $id_sistema, 3);
-      }
-  }
+  static private function updateRemoteRole($id_rol, $id_sistema){
 
-  static public function updateRemoteUser($id_usuario, $id_sistema){
     $keys = Sistemas::systemKey($id_sistema);
 
     foreach ($keys as $key)
@@ -34,16 +28,143 @@ class Usuarios extends Model
         $app_url =  $key->url;
     }
 
-    $updated =  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
+    $rol_data = json_encode(Roles::getDataRol($id_rol)[1]);
+    $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'roldata:'.$rol_data
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/updateroldata');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    return $data[10];
+  }
+
+  /********************************************************************************************************/
+  /********************************************************************************************************/
+  private function populateRemote($id_sistema, $ids_inserts){
+
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    $post_send = json_encode(array('ids_inserts' => $ids_inserts));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR']
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/populate');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\n",$res);
+    $status = $data[0];
+    return  $data[15];
+    //return $res;
+
+  }
+  /********************************************************************************************************/
+  /********************************************************************************************************/
+  private function getModelosRemotos($id_sistema){
+
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    $post_send = json_encode(array('proceso' => 'backup'));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR']
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/backup');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\n",$res);
+    $status = $data[0];
+    return  $data[12];
+    //return $res;
+  }
+
+/********************************************************************************************************/
+/********************************************************************************************************/
+
+  static public function updateRemoteUserFor($id_usuario){
+    $sistemas = SysUsr::getSysOfUser($id_usuario);
+    foreach ($sistemas as $sistema) {
+      self::updateRemoteUser($id_usuario, $sistema->id_sistema);
+    }
+  }
+  static public function updateRemoteUser($id_usuario, $id_sistema){
+
+    return  self::updateRemoteUser_do($id_usuario, $id_sistema);
     $rest = substr($updated, -1, 1);
     $valid = ($updated >= 1)?true:false;
     return $valid;
+
   }
 
-  static private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
+  static private function updateRemoteUser_do($id_usuario, $id_sistema){
+
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
 
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
     $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
+    $cat_status = SysUsr::getCatStatusOfUserSys($id_usuario, $id_sistema);
 
     $post_send = json_encode(array('proceso' => 'updateuserdata', 'userdata' => $user_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
@@ -54,7 +175,8 @@ class Usuarios extends Model
        'system-id:'.$id_sistema,
        'ip:'.$_SERVER['REMOTE_ADDR'],
        'userdata:'.$user_data,
-       'idrol:'.$id_rol
+       'idrol:'.$id_rol,
+       'catstatus:'.$cat_status
     );
 
     $curl = null;
@@ -71,13 +193,78 @@ class Usuarios extends Model
     $status = $data[0];
     return $data[10];
   }
+/********************************************************************************************************/
+/********************************************************************************************************/
+
+  static public function setRemoteUser($id_usuario, $id_sistema){
+
+    $updated =  self::setRemoteUser_do($id_usuario, $id_sistema);
+    $rest = substr($updated, -1, 1);
+    $valid = ($updated >= 1)?true:false;
+    return $valid;
+  }
+
+  static private function setRemoteUser_do($id_usuario, $id_sistema){
+
+    $keys = Sistemas::systemKey($id_sistema);
+
+    foreach ($keys as $key)
+    {
+        $app_secret =  $key->system_key;
+        $app_name =  $key->nombre;
+        $app_url =  $key->url;
+    }
+
+    $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
+    $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
+
+    $post_send = json_encode(array('proceso' => 'syncuser', 'userdata' => $user_data));
+    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+    $headers = array(
+       'systemverify-Signature:'.$sign,
+       'system:'.$app_name,
+       'system-id:'.$id_sistema,
+       'ip:'.$_SERVER['REMOTE_ADDR'],
+       'userdata:'.$user_data,
+       'idrol:'.$id_rol
+    );
+
+    $curl = null;
+    $curl = curl_init($app_url.'webhook/syncuser');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+    $res = curl_exec($curl);
+    $data = explode("\r\n",$res);
+    $status = $data[0];
+    return  $data[10];
+  }
+  /********************************************************************************************************/
+  /********************************************************************************************************/
+
+    static function getSysOfUser($id_usuario){
+        $sistemas = SysUsr::getSysOfUser($id_usuario);
+        foreach($sistemas as $sistema){
+          SysUsr::updateRelationStatus($id_usuario, $id_sistema, 17);
+
+          if(self::updateRemoteUser($id_usuario, $sistema->id_sistema))
+            SysUsr::updateRelationStatus($id_usuario, $id_sistema, 3);
+        }
+    }
 
   static function usuarios_bloqueados(){
     return DB::table('fw_usuarios')->where('cat_status','=',9)->count();
   }
+
   static function obtener_usuarios(){
     return DB::table('fw_usuarios')->get();
   }
+
   static function baja_usuario($id_usuario){
     $query_resp = DB::table('fw_usuarios')
             ->where('id_usuario', $id_usuario)
@@ -87,7 +274,7 @@ class Usuarios extends Model
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
     if($query_resp){
-      self::updateRemoteUser($id_usuario);
+      self::updateRemoteUserFor($id_usuario);
       $respuesta = array('resp' => true , 'mensaje' => 'La baja del usuario se realizó de manera correcta.');
     }else{
       $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al dar de baja al usuario.' );
@@ -199,7 +386,7 @@ class Usuarios extends Model
                 'token'=> Helpme::token(32),
                 'user_mod'=> $_SESSION['id_usuario']
             ]);
-    self::updateRemoteUser($id_usuario);
+    self::updateRemoteUserFor($id_usuario);
     return $result;
   }
 
@@ -274,7 +461,7 @@ class Usuarios extends Model
                           ]);
 
     if($query_resp){
-      self::updateRemoteUser($request->input('id_usuario'));
+      self::updateRemoteUserFor($request->input('id_usuario'));
       self::updateIngreso($request->input('fecha_ingreso'),$request->input('id_usuario'));
       $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
     }else{
@@ -301,7 +488,7 @@ class Usuarios extends Model
                               'token'=> Helpme::token(32),
                               'user_mod'=>$mod_user
                           ]);
-    self::updateRemoteUser($id_usuario);
+    self::updateRemoteUserFor($id_usuario);
     return $query_resp;
   }
 
@@ -395,7 +582,7 @@ class Usuarios extends Model
       self::updateIngreso($request->input('fecha_ingreso'),$id_usuario);
 
       if($id_usuario){
-        self::updateRemoteUser($id_usuario);
+        self::updateRemoteUserFor($id_usuario);
         $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.', 'id_rol' =>  $request->input('id_rol'), 'id_usuario' => $id_usuario);
       }else{
         $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );

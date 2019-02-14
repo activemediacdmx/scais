@@ -15,7 +15,7 @@ class Developer extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permiso:Developer|index', ['only' => ['index','test']]);
+        $this->middleware('permiso:Developer|index', ['only' => ['index']]);
     }
 
     public function index() {
@@ -23,8 +23,12 @@ class Developer extends Controller
     }
 
     static public function test(){
-      $i = SysUsr::getRolOfUserSys(1, 2);
-      dd($i->id_rol);
+
+        $sistemas = SysUsr::getSysOfUser(1);
+        foreach ($sistemas as $sistema) {
+          echo $sistema->id_sistema;
+        }
+
     }
 
 

@@ -31,122 +31,18 @@ class Sistemas extends Controller
           $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
      }
 
-     if($cat_status == 13){
-       //inserta usuario remoto
-       $data = self::setRemoteUser($id_usuario, $id_sistema, $estado);
-     }else{
-       //actualiza usuario remoto
-       $data = self::updateRemoteUser($id_usuario, $id_sistema, $estado);
-     }
-
-     if($data){
-       //set status local
-       if($estado == true){
-         ModelSistemas::update_permiso($id_usuario, $id_sistema, 3);
-       }else{
-         ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
-       }
-
+     if($estado === 'false'){
+       ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
+       $i = Usuarios::updateRemoteUser($id_usuario, $id_sistema);
      }
 
 
      $resp = array(
          'resp' => true ,
-         'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-         'data' => $data
+         'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.'
      );
      return json_encode($resp);
 
-  }
-
-  public function updateRemoteUser($id_usuario, $id_sistema, $estado){
-    $keys = ModelSistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
-    return  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
-  }
-
-  private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
-
-    $post_send = json_encode(array('proceso' => 'updateuser'));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
-       'estado:'.$estado,
-       'id-usuario:'.$id_usuario
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/updateuser');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
-    return  $data[10];
-    //return $res;
-  }
-
-  public function setRemoteUser($id_usuario, $id_sistema, $estado){
-    $keys = ModelSistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
-    return  self::setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado);
-  }
-
-  private function setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
-
-    $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
-    $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
-
-    $post_send = json_encode(array('proceso' => 'syncuser', 'userdata' => $user_data));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
-       'estado:'.$estado,
-       'userdata:'.$user_data,
-       'idrol:'.$id_rol
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/syncuser');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
-    return  $data[10];
-    //return $res;
   }
 
   public function sync_sistema($id_sistema){
@@ -160,17 +56,15 @@ class Sistemas extends Controller
     foreach ($keys as $key)
     {
         $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
     }
 
     if($app_secret != $request->input('system_key')){
       $resp = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'La SYSTEM KEY proporcionada no corresponde al sistema.' );
     }else{
 
-      $post = self::getModelosRemotos($app_url, $app_secret, $app_name, $id_sistema);
+      $post = Usuarios::getModelosRemotos($id_sistema);
       $ids_inserts = self::populateImports($post, $id_sistema);
-      $result = self::populateRemote($app_url, $app_secret, $app_name, $id_sistema, $ids_inserts);
+      $result = Usuarios::populateRemote($id_sistema, $ids_inserts);
 
       $result = json_decode($result);
 
@@ -184,63 +78,6 @@ class Sistemas extends Controller
     }
 
     print json_encode($resp);
-  }
-
-  private function populateRemote($app_url, $app_secret, $app_name, $id_sistema, $ids_inserts){
-
-    $post_send = json_encode(array('ids_inserts' => $ids_inserts));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR']
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/populate');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\n",$res);
-    $status = $data[0];
-    return  $data[15];
-    //return $res;
-
-  }
-
-  private function getModelosRemotos($app_url, $app_secret, $app_name, $id_sistema){
-
-    $post_send = json_encode(array('proceso' => 'backup'));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR']
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/backup');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\n",$res);
-    $status = $data[0];
-    return  $data[12];
-    //return $res;
   }
 
   private function populateImports($post, $system_id){
@@ -298,12 +135,6 @@ class Sistemas extends Controller
       );
       $id_accesos[$accesos[$i]['id_permiso']] = $id_permiso;
     }
-
-    //$import_metodos = json_encode($id_metodos);
-    //$import_roles = json_encode($id_roles);
-    //$import_permisos = json_encode($id_accesos);
-
-    //array_values($id_accesos)[0]
 
     $metodos_send = array(array_values($id_metodos)[0], array_values($id_metodos)[count($id_metodos)-1]);
     $roles_send = array(array_values($id_roles)[0], array_values($id_roles)[count($id_roles)-1]);
