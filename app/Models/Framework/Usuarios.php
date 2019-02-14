@@ -35,6 +35,7 @@ class Usuarios extends Model
     }
 
     $updated =  self::updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema);
+    $rest = substr($updated, -1, 1);
     $valid = ($updated >= 1)?true:false;
     return $valid;
   }
@@ -42,6 +43,7 @@ class Usuarios extends Model
   static private function updateRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema){
 
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
+    $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
 
     $post_send = json_encode(array('proceso' => 'updateuserdata', 'userdata' => $user_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
@@ -51,7 +53,8 @@ class Usuarios extends Model
        'system:'.$app_name,
        'system-id:'.$id_sistema,
        'ip:'.$_SERVER['REMOTE_ADDR'],
-       'userdata:'.$user_data
+       'userdata:'.$user_data,
+       'idrol:'.$id_rol
     );
 
     $curl = null;
@@ -188,9 +191,9 @@ class Usuarios extends Model
     return $respuesta;
   }
 
-  static function pass_chge_stat($stat,$user){
+  static function pass_chge_stat($stat,$id_usuario){
     $result = DB::table('fw_usuarios')
-            ->where('id_usuario', $user)
+            ->where('id_usuario', $id_usuario)
             ->update([
                 'cat_pass_chge'=> $stat,
                 'token'=> Helpme::token(32),
@@ -271,7 +274,7 @@ class Usuarios extends Model
                           ]);
 
     if($query_resp){
-      self::updateRemoteUser($id_usuario);
+      self::updateRemoteUser($request->input('id_usuario'));
       self::updateIngreso($request->input('fecha_ingreso'),$request->input('id_usuario'));
       $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
     }else{

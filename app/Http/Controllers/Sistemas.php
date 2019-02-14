@@ -6,6 +6,7 @@ use App\Models\Viewsistemas;
 use App\Models\Usuarios;
 use App\Models\Catalogo;
 use App\Models\Sistemas as ModelSistemas;
+use App\Models\Systemsystemusers as SysUsr;
 use Helpme;
 use DB;
 
@@ -117,6 +118,7 @@ class Sistemas extends Controller
   private function setRemoteUser_do($app_url, $app_secret, $app_name, $id_usuario, $id_sistema, $estado){
 
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
+    $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
 
     $post_send = json_encode(array('proceso' => 'syncuser', 'userdata' => $user_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
@@ -127,7 +129,8 @@ class Sistemas extends Controller
        'system-id:'.$id_sistema,
        'ip:'.$_SERVER['REMOTE_ADDR'],
        'estado:'.$estado,
-       'userdata:'.$user_data
+       'userdata:'.$user_data,
+       'idrol:'.$id_rol
     );
 
     $curl = null;

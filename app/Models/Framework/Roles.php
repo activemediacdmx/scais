@@ -20,16 +20,15 @@ class Roles extends Model
             'user_mod'=> $_SESSION['id_usuario']
         ]);
     self::getSysOfRoles($id_rol);
-
   }
 
   static function getSysOfRoles($id_rol){
       $roles = SysUsr::getSysOfRoles($id_rol);
       foreach($roles as $role){
-        SysUsr::updateRelationStatus($id_rol, $id_sistema, 18);
+        SysUsr::updateRelationStatus($id_rol, $role->id_sistema, 18);
 
         if(self::updateRemoteRole($id_rol, $role->id_sistema))
-          SysUsr::updateRelationStatus($id_rol, $id_sistema, 3);
+          SysUsr::updateRelationStatus($id_rol, $role->id_sistema, 3);
       }
   }
 
@@ -44,14 +43,14 @@ class Roles extends Model
     }
 
     $updated =  self::updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema);
+    $rest = substr($updated, -1, 1);
     $valid = ($updated >= 1)?true:false;
     return $valid;
   }
 
   static private function updateRemoteRole_do($app_url, $app_secret, $app_name, $id_rol, $id_sistema){
 
-    $rol_data = json_encode(Roles::getDataRol($id_rol));
-
+    $rol_data = json_encode(Roles::getDataRol($id_rol)[1]);
     $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
 
