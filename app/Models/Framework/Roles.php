@@ -40,7 +40,7 @@ class Roles extends Model
     $rest = substr($updated, -1, 1);
     $valid = ($updated >= 1)?true:false;
     return $valid;
-    
+
   }
 
 

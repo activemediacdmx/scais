@@ -32,7 +32,7 @@ class Systemroles extends Controller
     return view('modales/sistemas/gestion_roles')->with('datos', $datos);
   }
 
-  public function agregar_rol(Request $request, $id_sistema){
+  public function agregar_rol($id_sistema, Request $request){
     print json_encode(ModelSystemroles::agregar_rol($request,$id_sistema));
   }
 

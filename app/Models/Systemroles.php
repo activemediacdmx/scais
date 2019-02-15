@@ -79,18 +79,22 @@ class Systemroles extends Model
 
   static function agregar_rol($request,$id_sistema){
 
-    $query_resp = DB::table('fw_roles')->insert([
-        [
+    $id_rol = DB::table('fw_roles')->insertGetId([
           'descripcion' => $request->input('descripcion'),
+          'token'=> Helpme::token(32),
           'cat_tiporol' => $request->input('cat_tiporol'),
           'id_sistema' => $id_sistema,
           'user_alta' => $_SESSION['id_usuario'],
           'fecha_alta' => date("Y-m-d H:i:s")
-        ]
     ]);
 
-    if($query_resp){
-      $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+    if($id_rol){
+      $i = Usuarios::setRemoteRol($id_rol, $id_sistema);
+      $respuesta = array(
+          'resp' => true ,
+          'mensaje' => 'Registro guardado correctamente.',
+          'insertRemoteRol' => $i
+      );
     }else{
       $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
     }
