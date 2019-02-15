@@ -3,7 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Systemsystemusers as SysUsr;
-use App\Models\Sistemas as Systems;
+use App\Models\Sistemas;
 use Helpme;
 use DB;
 
@@ -17,7 +17,7 @@ class Usuarios extends Model
   /********************************************************************************************************/
   /********************************************************************************************************/
 
-  static public function updateRemoteRole($id_rol, $id_sistema){
+  static private function updateRemoteRole($id_rol, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -57,7 +57,7 @@ class Usuarios extends Model
 
   /********************************************************************************************************/
   /********************************************************************************************************/
-  static public function populateRemote($id_sistema, $ids_inserts){
+  private function populateRemote($id_sistema, $ids_inserts){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -96,7 +96,8 @@ class Usuarios extends Model
   }
   /********************************************************************************************************/
   /********************************************************************************************************/
-  static public function getModelosRemotos($id_sistema){
+  private function getModelosRemotos($id_sistema){
+
     $keys = Sistemas::systemKey($id_sistema);
 
     foreach ($keys as $key)
@@ -182,16 +183,22 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    /*$rest = substr($data[10], -1, 1);
+    $rest = substr($data[10], -1, 1);
     $valid = ($rest >= 1)?true:false;
-    return $valid;*/
-    return $data;
-
+    return $valid;
   }
 /********************************************************************************************************/
 /********************************************************************************************************/
 
   static public function setRemoteUser($id_usuario, $id_sistema){
+
+    $updated =  self::setRemoteUser_do($id_usuario, $id_sistema);
+    $rest = substr($updated, -1, 1);
+    $valid = ($updated >= 1)?true:false;
+    return $valid;
+  }
+
+  static private function setRemoteUser_do($id_usuario, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -229,9 +236,7 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    $rest = substr($data[10], -1, 1);
-    $valid = ($rest >= 1)?true:false;
-    return $valid;
+    return  $data[10];
   }
   /********************************************************************************************************/
   /********************************************************************************************************/
@@ -253,6 +258,24 @@ class Usuarios extends Model
   static function obtener_usuarios(){
     return DB::table('fw_usuarios')->get();
   }
+
+  static function updateToken($id_usuario, $id_sistema){
+    $query_resp = DB::table('fw_usuarios')
+            ->where('id_usuario', $id_usuario)
+            ->update([
+                'token'=> Helpme::token(32),
+                'user_mod'=> $_SESSION['id_usuario']
+            ]);
+
+    if($query_resp){
+      self::updateRemoteUser($id_usuario, $id_sistema);
+      $respuesta = array('resp' => true, 'udtlc' => $query_resp);
+    }else{
+      $respuesta = array('resp' => false, 'udtlc' => 'error al actualizar el token');
+    }
+    return json_encode($respuesta);
+  }
+
 
   static function baja_usuario($id_usuario){
     $query_resp = DB::table('fw_usuarios')

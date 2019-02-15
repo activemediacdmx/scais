@@ -33,16 +33,16 @@ class Sistemas extends Controller
 
      if($estado === 'false'){
        ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
-       $i = Usuarios::updateRemoteUser($id_usuario, $id_sistema);
+       $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
      }else{
-       $i = 'stateTrue';
+       $respuesta = 'stateTrue';
      }
 
 
      $resp = array(
          'resp' => true ,
          'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-         'remoteUpdate' => $i
+         'updToken' => $respuesta
      );
      return json_encode($resp);
 
