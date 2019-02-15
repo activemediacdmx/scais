@@ -3,7 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Systemsystemusers as SysUsr;
-use App\Models\Sistemas;
+use App\Models\Sistemas as Systems;
 use Helpme;
 use DB;
 
@@ -17,7 +17,7 @@ class Usuarios extends Model
   /********************************************************************************************************/
   /********************************************************************************************************/
 
-  static private function updateRemoteRole($id_rol, $id_sistema){
+  static public function updateRemoteRole($id_rol, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -57,7 +57,7 @@ class Usuarios extends Model
 
   /********************************************************************************************************/
   /********************************************************************************************************/
-  private function populateRemote($id_sistema, $ids_inserts){
+  static public function populateRemote($id_sistema, $ids_inserts){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -96,8 +96,7 @@ class Usuarios extends Model
   }
   /********************************************************************************************************/
   /********************************************************************************************************/
-  private function getModelosRemotos($id_sistema){
-
+  static public function getModelosRemotos($id_sistema){
     $keys = Sistemas::systemKey($id_sistema);
 
     foreach ($keys as $key)
@@ -142,16 +141,8 @@ class Usuarios extends Model
       self::updateRemoteUser($id_usuario, $sistema->id_sistema);
     }
   }
+
   static public function updateRemoteUser($id_usuario, $id_sistema){
-
-    return  self::updateRemoteUser_do($id_usuario, $id_sistema);
-    $rest = substr($updated, -1, 1);
-    $valid = ($updated >= 1)?true:false;
-    return $valid;
-
-  }
-
-  static private function updateRemoteUser_do($id_usuario, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -166,7 +157,7 @@ class Usuarios extends Model
     $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
     $cat_status = SysUsr::getCatStatusOfUserSys($id_usuario, $id_sistema);
 
-    $post_send = json_encode(array('proceso' => 'updateuserdata', 'userdata' => $user_data));
+    $post_send = json_encode(array('proceso' => 'updateuser', 'userdata' => $user_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
 
     $headers = array(
@@ -180,7 +171,7 @@ class Usuarios extends Model
     );
 
     $curl = null;
-    $curl = curl_init($app_url.'webhook/updateuserdata');
+    $curl = curl_init($app_url.'webhook/updateuser');
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HEADER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
@@ -191,20 +182,16 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    return $data[10];
+    /*$rest = substr($data[10], -1, 1);
+    $valid = ($rest >= 1)?true:false;
+    return $valid;*/
+    return $data;
+
   }
 /********************************************************************************************************/
 /********************************************************************************************************/
 
   static public function setRemoteUser($id_usuario, $id_sistema){
-
-    $updated =  self::setRemoteUser_do($id_usuario, $id_sistema);
-    $rest = substr($updated, -1, 1);
-    $valid = ($updated >= 1)?true:false;
-    return $valid;
-  }
-
-  static private function setRemoteUser_do($id_usuario, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -242,7 +229,9 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    return  $data[10];
+    $rest = substr($data[10], -1, 1);
+    $valid = ($rest >= 1)?true:false;
+    return $valid;
   }
   /********************************************************************************************************/
   /********************************************************************************************************/

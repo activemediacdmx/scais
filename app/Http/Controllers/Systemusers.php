@@ -56,8 +56,8 @@ class Systemusers extends Controller
       $respuesta = array(
           'resp' => true ,
           'mensaje' => 'Registro guardado correctamente.',
-          'local_rol' => json_encode($result),
-          'remote_usr' => json_encode($data)
+          'local_rol' => $result,
+          'remote_usr' => $data
 
       );
 
