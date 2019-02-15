@@ -235,11 +235,21 @@ class Login extends Model
               ->get();
     if(count($status)>=1){
       foreach ($status as $num => $row) {
-         if($row->cat_status == 9){
-            return "inhabilitado";
-         }else{
-            return "habilitado";
-         }
+        switch ($row->cat_status) {
+            case 9: // login fallido
+                $return = "inhabilitado";
+                break;
+            case 4: // inactivo
+                $return = "inactivo";
+                break;
+            case 5: // eliminado
+                $return = "eliminado";
+                break;
+            case 3: // habilitado
+                $return = "habilitado";
+                break;
+        }
+        return $return;
       }
     }else{
       return 'No autorizado';
@@ -259,7 +269,6 @@ class Login extends Model
               ->select('u.id_usuario', 'su.id_rol', 'u.usuario', 'u.id_ubicacion', 'u.correo', 'uc.aceptar_tyc', 'u.cat_pass_chge', 'token')
               ->where('u.usuario', '=', $usuario)
               ->where('u.password', '=', $password_md5)
-              ->where('u.cat_status', '=', 3)
               ->where('s.id_sistema', '=', $id_sistema)
               ->get();
 
@@ -375,10 +384,23 @@ class Login extends Model
   static function logear($request){
 
     $stat = self::getStatusUser($request->input('usuario'));
-    if($stat == 9){
-      $array[]=array('resp'=>"inhabilitado");
-      print json_encode($array);
-      exit();
+
+    switch ($stat) {
+        case 9: // login fallido
+            $array[]=array('resp'=>"inhabilitado");
+            print json_encode($array);
+            exit();
+            break;
+        case 4: // inactivo
+            $array[]=array('resp'=>"inactivo");
+            print json_encode($array);
+            exit();
+            break;
+        case 5: // eliminado
+            $array[]=array('resp'=>"eliminado");
+            print json_encode($array);
+            exit();
+            break;
     }
 
     $password_md5=md5($request->input('password'));

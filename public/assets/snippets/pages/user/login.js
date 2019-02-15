@@ -88,6 +88,14 @@ var SnippetLogin = function() {
         						$('#usuario').value="";
         						$('#password').value="";
         						alerta('Alerta!','Su cuenta está inhabilitada por exceder el número de intentos de acceso permitidos, notifíquelo a su administrador');
+        					}else if(respuesta[0].resp=="inactivo"){
+        						$('#usuario').value="";
+        						$('#password').value="";
+        						alerta('Alerta!','Su cuenta ha sido inhabilitada, notifíquelo a su administrador');
+        					}else if(respuesta[0].resp=="eliminado"){
+        						$('#usuario').value="";
+        						$('#password').value="";
+        						alerta('Alerta!','Su cuenta fue eliminada, notifíquelo a su administrador');
         					}
 
                     setTimeout(function() {
