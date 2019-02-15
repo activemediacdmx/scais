@@ -192,14 +192,6 @@ class Usuarios extends Model
 
   static public function setRemoteUser($id_usuario, $id_sistema){
 
-    $updated =  self::setRemoteUser_do($id_usuario, $id_sistema);
-    $rest = substr($updated, -1, 1);
-    $valid = ($updated >= 1)?true:false;
-    return $valid;
-  }
-
-  static private function setRemoteUser_do($id_usuario, $id_sistema){
-
     $keys = Sistemas::systemKey($id_sistema);
 
     foreach ($keys as $key)
@@ -236,7 +228,9 @@ class Usuarios extends Model
     $res = curl_exec($curl);
     $data = explode("\r\n",$res);
     $status = $data[0];
-    return  $data[10];
+    $rest = substr($data[10], -1, 1);
+    $valid = ($rest >= 1)?true:false;
+    return $valid;
   }
   /********************************************************************************************************/
   /********************************************************************************************************/

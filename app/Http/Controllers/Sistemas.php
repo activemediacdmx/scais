@@ -35,7 +35,8 @@ class Sistemas extends Controller
        ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
        $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
      }else{
-       $respuesta = 'stateTrue';
+       ModelSistemas::update_permiso($id_usuario, $id_sistema, 3);
+       $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
      }
 
 

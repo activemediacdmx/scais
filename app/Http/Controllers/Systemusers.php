@@ -50,8 +50,6 @@ class Systemusers extends Controller
         $data = Usuarios::updateRemoteUser($id_usuario, $id_sistema);
       }
 
-      Sistemas::update_permiso($id_usuario, $id_sistema, 3);
-
 
       $respuesta = array(
           'resp' => true ,
