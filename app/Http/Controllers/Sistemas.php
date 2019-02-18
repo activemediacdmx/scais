@@ -20,33 +20,16 @@ class Sistemas extends Controller
       $this->middleware('permiso:Sistemas|editar_sistema', ['only' => ['modal_editar_sistema','editar_sistema']]);
   }
 
-  public function vincular_sistema($id_usuario, $id_sistema, $estado){
-     $dataRelacion = ModelSistemas::getUserSysData($id_sistema, $id_usuario);
+  public function vincular_sistema($id_usuario, $id_sistema){
 
-     if(count($dataRelacion) == 0){
-          $id_sistemas_usuario = ModelSistemas::setear_permiso($id_usuario, $id_sistema);
-          //$remote = Usuarios::setRemoteUser($id_usuario, $id_sistema);
-          $cat_status =  13;
-     }else{
-          $remote = 'Exist';
-          $cat_status =  $dataRelacion[0]->cat_status;
-          $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
-     }
-
-     if($estado === 'false'){
-       ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
-       $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
-     }else{
-       ModelSistemas::update_permiso($id_usuario, $id_sistema, 3);
-       $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
-     }
+     ModelSistemas::update_permiso($id_usuario, $id_sistema, 4);
+     $respuesta = Usuarios::updateToken($id_usuario, $id_sistema);
 
 
      $resp = array(
          'resp' => true ,
-         'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-         'updToken' => $respuesta ,
-         'createRemote' => $remote ,
+         'mensaje' => 'Se ha seteado al usuario como inactivo.',
+         'updToken' => $respuesta
      );
      return json_encode($resp);
 

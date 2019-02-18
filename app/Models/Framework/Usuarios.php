@@ -14,6 +14,49 @@ class Usuarios extends Model
   protected $primaryKey = 'id_usuario';
   public $timestamps = false;
 
+
+  /********************************************************************************************************/
+  /********************************************************************************************************/
+
+    static public function setRemoteMetodo($datametodo){
+
+      $keys = Sistemas::systemKey($datametodo['id_sistema']);
+
+      foreach ($keys as $key)
+      {
+          $app_secret =  $key->system_key;
+          $app_name =  $key->nombre;
+          $app_url =  $key->url;
+      }
+
+      $post_send = json_encode(array('proceso' => 'syncmetodo', 'metododata' => $datametodo));
+      $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+      $headers = array(
+         'systemverify-Signature:'.$sign,
+         'system:'.$app_name,
+         'system-id:'.$datametodo['id_sistema'],
+         'ip:'.$_SERVER['REMOTE_ADDR'],
+         'metododata:'.$datametodo
+      );
+
+      $curl = null;
+      $curl = curl_init($app_url.'webhook/syncmetodo');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_HEADER, 1);
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+      $res = curl_exec($curl);
+      $data = explode("\r\n",$res);
+      $status = $data[0];
+      $rest = substr($data[10], -1, 1);
+      $valid = ($rest >= 1)?true:false;
+      return $valid;
+    }
+
   /********************************************************************************************************/
   /********************************************************************************************************/
 

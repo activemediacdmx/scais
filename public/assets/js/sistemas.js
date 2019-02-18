@@ -119,17 +119,12 @@ $("body").on("click", ".sys_js_fn_05", function() {
 });
 
 function vincular_sistema(id_sistema) {
-		var id_sistema = escape(id_sistema);
-		var estado = document.getElementById("system_access_" + id_sistema).checked;
-		var id_usuario = document.getElementById("id_usuario").value;
-		$.ajax({
-			headers: {
-						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			},
-			url: app_url + 'sistemas/vincular_sistema/' + id_usuario + '/' + id_sistema + '/' + estado ,
-			dataType: 'json',
-			success: function(resp_success){
-				if (resp_success['resp'] == true) {
+
+					var id_sistema = escape(id_sistema);
+					var estado = document.getElementById("system_access_" + id_sistema).checked;
+					var id_usuario = document.getElementById("id_usuario").value;
+
+
 					if(estado == true){
 							$.ajax({
 								headers: {
@@ -145,17 +140,23 @@ function vincular_sistema(id_sistema) {
 											$(this).remove();
 									});
 								},
-								error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-15');}
+								error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-9.5');}
 							});
-
-
 					}else{
-						$('#system_menu_' + id_sistema).hide();
+						$.ajax({
+							headers: {
+										'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+							},
+							url: app_url + 'sistemas/vincular_sistema/' + id_usuario + '/' + id_sistema ,
+							dataType: 'json',
+							success: function(resp_success){
+								if (resp_success['resp'] == true) {
+									$('#system_menu_' + id_sistema).hide();
+								}
+							},
+							error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-10');}
+						});
 					}
-				}
-			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red SYS-10');}
-		});
 
 }
 
@@ -233,6 +234,8 @@ $("body").on("click", "#sys_js_fn_09", function() {
 	var msj_error="";
 	if( $('#controlador').get(0).value == "" )	msj_error+='El Controlador es requerido.<br />';
 	if( $('#metodo').get(0).value == "")	msj_error+='El modelo es requerido.<br />';
+	if( $('#nombre').get(0).value == "")	msj_error+='El nombre es requerido.<br />';
+	if( $('#descripcion').get(0).value == "")	msj_error+='La descripción es requerida.<br />';
 	if( !msj_error == "" ){
 		alerta_div('error_alerta','Error en la captura de datos.',msj_error);
 		return false;

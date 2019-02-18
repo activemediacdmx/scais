@@ -29,12 +29,13 @@ class Sistemas extends Model
                     ->get();
   }
 
-  static function setear_permiso($id_usuario, $id_sistema){
+  static function setear_permiso($id_usuario, $id_sistema, $id_rol){
 
     return DB::table('sistemas_usuario')->insertGetId(
         [
           'id_sistema' => $id_sistema,
           'id_usuario' => $id_usuario,
+          'id_rol' => $id_rol,
           'cat_status' => 13,
           'user_alta' => $_SESSION['id_usuario'],
           'fecha_alta' => date("Y-m-d H:i:s")

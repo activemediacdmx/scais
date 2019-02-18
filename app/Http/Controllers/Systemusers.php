@@ -36,26 +36,34 @@ class Systemusers extends Controller
 
   public function edita_rol_usuario(Request $request){
 
-      $id_usuario = $request->input('id_usuario');
-      $id_sistema = $request->input('id_sistema');
+    $id_usuario = $request->input('id_usuario');
+    $id_sistema = $request->input('id_sistema');
+    $dataRelacion = Sistemas::getUserSysData($id_sistema, $id_usuario);
 
-      $result = ModelSystemusers::edita_rol_usuario($request);
-      $cat_status = SysUsr::getCatStatusOfUserSys($id_usuario, $id_sistema);
 
-      if($cat_status == 13){
-        //inserta usuario remoto
-        $data = Usuarios::setRemoteUser($id_usuario, $id_sistema);
-      }else{
-        //actualiza usuario remoto
-        $data = Usuarios::updateRemoteUser($id_usuario, $id_sistema);
-      }
+    if(count($dataRelacion) == 0){
+      //inserta usuario remoto
+         Sistemas::setear_permiso($id_usuario, $id_sistema, $request->input('id_rol'));
 
+         if(Usuarios::setRemoteUser($id_usuario, $id_sistema)){
+           Sistemas::update_permiso($id_usuario, $id_sistema, 3);
+           $remote = true;
+         }
+
+         $result = 'Exist';
+    }else{
+      //actualiza usuario remoto
+         Sistemas::update_permiso($id_usuario, $id_sistema, 3);
+         Usuarios::updateToken($id_usuario, $id_sistema);
+         Usuarios::updateRemoteUser($id_usuario, $id_sistema);
+         $remote = 'Exist';
+         $result = ModelSystemusers::edita_rol_usuario($request);
+    }
 
       $respuesta = array(
           'resp' => true ,
-          'mensaje' => 'Registro guardado correctamente.',
           'local_rol' => $result,
-          'remote_usr' => $data
+          'remote' => $remote
 
       );
 
