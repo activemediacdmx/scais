@@ -40,10 +40,12 @@ class Permisos extends Model
 
     if($id_metodo){
       $datametodo = self::data_controller($id_metodo);
-      Usuarios::setRemoteMetodo($datametodo);
+      $insert = Usuarios::setRemoteMetodo($datametodo);
+
           $respuesta = array(
                     'resp' => true ,
-                    'mensaje' => 'Registro guardado correctamente.'
+                    'mensaje' => 'Registro guardado correctamente.',
+                    'remoteInsert' => $insert
           );
     }else{
       $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
@@ -85,20 +87,7 @@ class Permisos extends Model
 
 
   static function data_controller($id){
-    $metodo = Permisos::all()->where('id_metodo','=',$id);
-    if(count($metodo)>=1){
-      foreach ($metodo as $row) {
-        $array[]=array(
-          'id_metodo' => $row->id_metodo,
-          'id_sistema' => $row->id_sistema,
-          'controlador' => $row->controlador,
-          'metodo' => $row->metodo,
-          'nombre' => $row->nombre,
-          'descripcion' => $row->descripcion
-        );
-      }
-    }
-    return $array;
+    return Permisos::where('id_metodo','=',$id)->first();
   }
 
 

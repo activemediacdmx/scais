@@ -20,7 +20,9 @@ class Usuarios extends Model
 
     static public function setRemoteMetodo($datametodo){
 
-      $keys = Sistemas::systemKey($datametodo['id_sistema']);
+      $id_sistema = $datametodo->id_sistema;
+
+      $keys = Sistemas::systemKey($id_sistema);
 
       foreach ($keys as $key)
       {
@@ -35,7 +37,7 @@ class Usuarios extends Model
       $headers = array(
          'systemverify-Signature:'.$sign,
          'system:'.$app_name,
-         'system-id:'.$datametodo['id_sistema'],
+         'system-id:'.$id_sistema,
          'ip:'.$_SERVER['REMOTE_ADDR'],
          'metododata:'.$datametodo
       );
@@ -55,6 +57,7 @@ class Usuarios extends Model
       $rest = substr($data[10], -1, 1);
       $valid = ($rest >= 1)?true:false;
       return $valid;
+
     }
 
   /********************************************************************************************************/
