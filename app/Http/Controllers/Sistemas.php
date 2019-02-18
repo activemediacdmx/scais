@@ -25,8 +25,10 @@ class Sistemas extends Controller
 
      if(count($dataRelacion) == 0){
           $id_sistemas_usuario = ModelSistemas::setear_permiso($id_usuario, $id_sistema);
+          //$remote = Usuarios::setRemoteUser($id_usuario, $id_sistema);
           $cat_status =  13;
      }else{
+          $remote = 'Exist';
           $cat_status =  $dataRelacion[0]->cat_status;
           $id_sistemas_usuario =  $dataRelacion[0]->id_sistemas_usuario;
      }
@@ -43,7 +45,8 @@ class Sistemas extends Controller
      $resp = array(
          'resp' => true ,
          'mensaje' => 'La SYSTEM KEY es correcta, se procede con la sincronización.',
-         'updToken' => $respuesta
+         'updToken' => $respuesta ,
+         'createRemote' => $remote ,
      );
      return json_encode($resp);
 

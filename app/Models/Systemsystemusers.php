@@ -15,10 +15,6 @@ class Systemsystemusers extends Model
     return Systemsystemusers::where('id_usuario','=',$id_usuario)->get();
   }
 
-  static function getSysOfRoles($id_rol){
-    return Systemsystemusers::where('id_rol','=',$id_rol)->groupBy('id_sistema')->get();
-  }
-
   static function getRolOfUserSys($id_usuario, $id_sistema){
     $i =  Systemsystemusers::select('id_rol')
                     ->where('id_usuario','=',$id_usuario)
@@ -37,14 +33,6 @@ class Systemsystemusers extends Model
 
   static function updateRelationStatus($id_usuario, $id_sistema, $cat_status){
     return Systemsystemusers::where('id_usuario', $id_usuario)
-            ->where('id_sistema', $id_sistema)
-            ->update([
-                'cat_status'=> $cat_status
-            ]);
-  }
-
-  static function updateRelationStatusRol($id_rol, $id_sistema, $cat_status){
-    return Systemsystemusers::where('id_rol', $id_rol)
             ->where('id_sistema', $id_sistema)
             ->update([
                 'cat_status'=> $cat_status

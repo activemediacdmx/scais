@@ -17,7 +17,7 @@ class Controllers extends Model
   static function getAll($metodos){
     return Controllers::where('id_metodo','>=',$metodos[0])
                     ->where('id_metodo','<=',$metodos[1])
-                    ->get();    
+                    ->get();
   }
 
   static function eliminar_metodo($id_metodo){
@@ -75,7 +75,7 @@ class Controllers extends Model
 
   static function obtenerControllers(){
     $dataTable = new DT(
-      Controllers::where('id_metodo', '>', 0),
+      Controllers::where('id_sistema', '=', 1),
       ['id_metodo', 'controlador', 'metodo', 'nombre', 'descripcion']
     );
     return $dataTable->make();

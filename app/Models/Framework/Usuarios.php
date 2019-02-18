@@ -14,11 +14,53 @@ class Usuarios extends Model
   protected $primaryKey = 'id_usuario';
   public $timestamps = false;
 
+  /********************************************************************************************************/
+  /********************************************************************************************************/
+
+    static public function setRemoteRol($id_rol, $id_sistema){
+
+      $keys = Sistemas::systemKey($id_sistema);
+
+      foreach ($keys as $key)
+      {
+          $app_secret =  $key->system_key;
+          $app_name =  $key->nombre;
+          $app_url =  $key->url;
+      }
+
+      $rol_data = json_encode(Roles::getDataRol($id_rol));
+      $post_send = json_encode(array('proceso' => 'syncrol', 'roldata' => $rol_data));
+      $sign = hash_hmac('sha256', $post_send, $app_secret, false);
+
+      $headers = array(
+         'systemverify-Signature:'.$sign,
+         'system:'.$app_name,
+         'system-id:'.$id_sistema,
+         'ip:'.$_SERVER['REMOTE_ADDR'],
+         'roldata:'.$rol_data
+      );
+
+      $curl = null;
+      $curl = curl_init($app_url.'webhook/syncrol');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_HEADER, 1);
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
+
+      $res = curl_exec($curl);
+      $data = explode("\r\n",$res);
+      $status = $data[0];
+      $rest = substr($data[10], -1, 1);
+      $valid = ($rest >= 1)?true:false;
+      return $valid;
+    }
 
   /********************************************************************************************************/
   /********************************************************************************************************/
 
-  static private function updateRemoteRole($id_rol, $id_sistema){
+  static public function updateRemoteRole($id_rol, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -29,7 +71,7 @@ class Usuarios extends Model
         $app_url =  $key->url;
     }
 
-    $rol_data = json_encode(Roles::getDataRol($id_rol)[1]);
+    $rol_data = json_encode(Roles::getDataRol($id_rol));
     $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
 
@@ -58,7 +100,7 @@ class Usuarios extends Model
 
   /********************************************************************************************************/
   /********************************************************************************************************/
-  private function populateRemote($id_sistema, $ids_inserts){
+  static public function populateRemote($id_sistema, $ids_inserts){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -97,7 +139,7 @@ class Usuarios extends Model
   }
   /********************************************************************************************************/
   /********************************************************************************************************/
-  private function getModelosRemotos($id_sistema){
+  static public function getModelosRemotos($id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -188,48 +230,6 @@ class Usuarios extends Model
     $valid = ($rest >= 1)?true:false;
     return $valid;
   }
-  /********************************************************************************************************/
-  /********************************************************************************************************/
-
-    static public function setRemoteRol($id_rol, $id_sistema){
-
-      $keys = Sistemas::systemKey($id_sistema);
-
-      foreach ($keys as $key)
-      {
-          $app_secret =  $key->system_key;
-          $app_name =  $key->nombre;
-          $app_url =  $key->url;
-      }
-
-      $rol_data = json_encode(Roles::getDataRol($id_rol)[1]);
-      $post_send = json_encode(array('proceso' => 'syncrol', 'roldata' => $rol_data));
-      $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-      $headers = array(
-         'systemverify-Signature:'.$sign,
-         'system:'.$app_name,
-         'system-id:'.$id_sistema,
-         'ip:'.$_SERVER['REMOTE_ADDR'],
-         'roldata:'.$rol_data
-      );
-
-      $curl = null;
-      $curl = curl_init($app_url.'webhook/syncrol');
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($curl, CURLOPT_HEADER, 1);
-      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-      $res = curl_exec($curl);
-      $data = explode("\r\n",$res);
-      $status = $data[0];
-      $rest = substr($data[10], -1, 1);
-      $valid = ($rest >= 1)?true:false;
-      return $valid;
-    }
 
 /********************************************************************************************************/
 /********************************************************************************************************/

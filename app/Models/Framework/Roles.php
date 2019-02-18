@@ -21,17 +21,19 @@ class Roles extends Model
             'token'=> Helpme::token(32),
             'user_mod'=> $_SESSION['id_usuario']
         ]);
-    self::getSysOfRoles($id_rol);
+    self::setSysOfRoles($id_rol);
+  }
+
+  static function setSysOfRoles($id_rol){
+        $id_sistema = Roles::getSysOfRoles($id_rol);
+        self::updateRemoteRole($id_rol, $id_sistema);
   }
 
   static function getSysOfRoles($id_rol){
-      $roles = SysUsr::getSysOfRoles($id_rol);
-      foreach($roles as $role){
-        SysUsr::updateRelationStatus($id_rol, $role->id_sistema, 18);
-
-        if(self::updateRemoteRole($id_rol, $role->id_sistema))
-          SysUsr::updateRelationStatus($id_rol, $role->id_sistema, 3);
-      }
+        $i =  Roles::select('id_sistema')
+                        ->where('id_rol','=',$id_rol)
+                        ->first();
+        return $i->id_sistema;        
   }
 
   static public function updateRemoteRole($id_rol, $id_sistema){
@@ -372,12 +374,11 @@ class Roles extends Model
     }
   }
 
-  static function getDataRol($id_rol){
-    return Roles::all()
-              ->where('id_rol','=',$id_rol);
+  static public function getDataRol($id_rol){
+    return Roles::where('id_rol','=',$id_rol)->first();
   }
 
-  static function getAllDB(){
+  static public function getAllDB(){
     return Roles::all();
   }
 
