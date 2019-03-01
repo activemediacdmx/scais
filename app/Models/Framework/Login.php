@@ -311,7 +311,7 @@ class Login extends Model
 
     $permisos = DB::table('fw_permisos as fwp')
               ->join('fw_metodos as fwm','fwp.id_metodo','=','fwm.id_metodo')
-              ->select('fwm.controlador', 'fwm.metodo', 'fwm.id_metodo')
+              ->select('fwm.controlador', 'fwm.metodo', 'fwm.id_metodo', 'fwm.auditable')
               ->where('fwp.id_rol', '=', $rol)
               ->get();
 
@@ -322,13 +322,16 @@ class Login extends Model
         $accesos[$num] = $row->controlador .'|'. $row->metodo;
         $index = strtolower($row->controlador) .'|'. strtolower($row->metodo);
         $accessid[$index] = $row->id_metodo;
+        $auditstat[$index] = $row->auditable;
       }
       $array[0]['permisos'] = $accesos;
       $array[1]['accessid'] = $accessid;
+      $array[2]['auditstat'] = $auditstat;
       return $array;
     }else{
       $array[0]['permisos'] = '';
       $array[1]['accessid'] = '';
+      $array[2]['auditstat'] = '';
       return $array;
     }
   }

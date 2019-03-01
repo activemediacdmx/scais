@@ -87,6 +87,7 @@ class Sistemas extends Controller
             'metodo'=>$metodos[$i]['metodo'],
             'nombre'=>$metodos[$i]['nombre'],
             'descripcion'=>$metodos[$i]['descripcion'],
+            'auditable'=>$metodos[$i]['auditable'],
             'user_alta'=>$metodos[$i]['user_alta'],
             'user_mod'=>$metodos[$i]['user_mod'],
             'fecha_alta'=>$metodos[$i]['fecha_alta'],
