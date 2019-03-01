@@ -18,28 +18,30 @@ class Config extends Model
           ->where('open', 1)
           ->update(['ultima_verificacion' => date("Y-m-d H:i:s")]);
 
-      $metodo = (isset($request->segments()[1]))?$request->segments()[1]:'index';
+      if($_SESSION['auditstat'][strtolower($rol)] == 19){
 
-      //\Debugbar::info($_SESSION['accessid']);
-      DB::table('fw_auditoria')->insert(
-          [
-              'id_metodo' => $_SESSION['accessid'][strtolower($rol)],
-              'permiso' => $rol,
-              'controlador' => $request->segments()[0],
-              'metodo' => $metodo,
-              'post' => @json_encode($request->post()),
-              'headers' => json_encode($request->headers->all()),
-              'server' => json_encode($request->server->all()),
-              'session' => json_encode($request->getSession()->all()),
-              'ip' => $request->getClientIp(),
-              'url' => $request->url(),
-              'path' => $request->path(),
-              'method' => $request->method(),
-              'token_session' => $_SESSION['token'],
-              'user_alta' => $_SESSION['id_usuario'],
-              'fecha_alta' => date("Y-m-d H:i:s")
-          ]
-      );
+        $metodo = (isset($request->segments()[1]))?$request->segments()[1]:'index';
+        DB::table('fw_auditoria')->insert(
+            [
+                'id_metodo' => $_SESSION['accessid'][strtolower($rol)],
+                'permiso' => $rol,
+                'controlador' => $request->segments()[0],
+                'metodo' => $metodo,
+                'post' => @json_encode($request->post()),
+                'headers' => json_encode($request->headers->all()),
+                'server' => json_encode($request->server->all()),
+                'session' => json_encode($request->getSession()->all()),
+                'ip' => $request->getClientIp(),
+                'url' => $request->url(),
+                'path' => $request->path(),
+                'method' => $request->method(),
+                'token_session' => $_SESSION['token'],
+                'user_alta' => $_SESSION['id_usuario'],
+                'fecha_alta' => date("Y-m-d H:i:s")
+            ]
+        );
+
+      }
 
 /*
           'controlador' => $request->segments(),
