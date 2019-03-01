@@ -18,95 +18,7 @@ class Usuarios extends Model
   /********************************************************************************************************/
   /********************************************************************************************************/
 
-    static public function setRemoteMetodo($datametodo){
-
-      $id_sistema = $datametodo->id_sistema;
-
-      $keys = Sistemas::systemKey($id_sistema);
-
-      foreach ($keys as $key)
-      {
-          $app_secret =  $key->system_key;
-          $app_name =  $key->nombre;
-          $app_url =  $key->url;
-      }
-
-      $post_send = json_encode(array('proceso' => 'syncmetodo', 'metododata' => $datametodo));
-      $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-      $headers = array(
-         'systemverify-Signature:'.$sign,
-         'system:'.$app_name,
-         'system-id:'.$id_sistema,
-         'ip:'.$_SERVER['REMOTE_ADDR'],
-         'metododata:'.$datametodo
-      );
-
-      $curl = null;
-      $curl = curl_init($app_url.'webhook/syncmetodo');
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($curl, CURLOPT_HEADER, 1);
-      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-      $res = curl_exec($curl);
-      $data = explode("\r\n",$res);
-      $status = $data[0];
-      $rest = substr($data[10], -1, 1);
-      $valid = ($rest >= 1)?true:false;
-      return $valid;
-
-    }
-
-  /********************************************************************************************************/
-  /********************************************************************************************************/
-
-    static public function setRemoteRol($id_rol, $id_sistema){
-
-      $keys = Sistemas::systemKey($id_sistema);
-
-      foreach ($keys as $key)
-      {
-          $app_secret =  $key->system_key;
-          $app_name =  $key->nombre;
-          $app_url =  $key->url;
-      }
-
-      $rol_data = json_encode(Roles::getDataRol($id_rol));
-      $post_send = json_encode(array('proceso' => 'syncrol', 'roldata' => $rol_data));
-      $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-      $headers = array(
-         'systemverify-Signature:'.$sign,
-         'system:'.$app_name,
-         'system-id:'.$id_sistema,
-         'ip:'.$_SERVER['REMOTE_ADDR'],
-         'roldata:'.$rol_data
-      );
-
-      $curl = null;
-      $curl = curl_init($app_url.'webhook/syncrol');
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($curl, CURLOPT_HEADER, 1);
-      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-      $res = curl_exec($curl);
-      $data = explode("\r\n",$res);
-      $status = $data[0];
-      $rest = substr($data[10], -1, 1);
-      $valid = ($rest >= 1)?true:false;
-      return $valid;
-    }
-
-  /********************************************************************************************************/
-  /********************************************************************************************************/
-
-  static public function updateRemoteRole($id_rol, $id_sistema){
+  static public function startCurl($metodo, $headers_ext, $post_send, $id_sistema){
 
     $keys = Sistemas::systemKey($id_sistema);
 
@@ -117,113 +29,76 @@ class Usuarios extends Model
         $app_url =  $key->url;
     }
 
-    $rol_data = json_encode(Roles::getDataRol($id_rol));
-    $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
     $sign = hash_hmac('sha256', $post_send, $app_secret, false);
 
     $headers = array(
        'systemverify-Signature:'.$sign,
        'system:'.$app_name,
        'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
-       'roldata:'.$rol_data
+       'ip:'.$_SERVER['REMOTE_ADDR']
     );
 
+    $headers = array_merge($headers, $headers_ext);
+
     $curl = null;
-    $curl = curl_init($app_url.'webhook/updateroldata');
+    $curl = curl_init($app_url.'webhook/' . $metodo);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HEADER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
     $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
+    return explode("\r\n",$res);
+  }
+
+  static public function setRemoteRol($id_rol, $id_sistema){
+
+    $rol_data = json_encode(Roles::getDataRol($id_rol));
+    $metodo = 'syncrol';
+    $post_send = json_encode(array('proceso' => $metodo, 'roldata' => $rol_data));
+    $headers = array('roldata:'.$rol_data);
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
+    $rest = substr($data[10], -1, 1);
+    $valid = ($rest >= 1)?true:false;
+    return $valid;
+  }
+
+  static public function setRemoteMetodo($datametodo){
+    $id_sistema = $datametodo->id_sistema;
+    $metodo = 'syncmetodo';
+    $post_send = json_encode(array('proceso' => $metodo, 'metododata' => $datametodo));
+    $headers = array('metododata:'.$datametodo);
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
+    $rest = substr($data[10], -1, 1);
+    $valid = ($rest >= 1)?true:false;
+    return $valid;
+  }
+
+  static public function updateRemoteRole($id_rol, $id_sistema){
+    $metodo = 'updateroldata';
+    $rol_data = json_encode(Roles::getDataRol($id_rol));
+    $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
+    $headers = array('roldata:'.$rol_data);
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
     return $data[10];
   }
 
-  /********************************************************************************************************/
-  /********************************************************************************************************/
   static public function populateRemote($id_sistema, $ids_inserts){
-
-    $keys = Sistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
+    $metodo = 'populate';
     $post_send = json_encode(array('ids_inserts' => $ids_inserts));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR']
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/populate');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\n",$res);
-    $status = $data[0];
+    $headers = array();
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
     return  $data[15];
-    //return $res;
-
   }
-  /********************************************************************************************************/
-  /********************************************************************************************************/
+
   static public function getModelosRemotos($id_sistema){
-
-    $keys = Sistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
-    $post_send = json_encode(array('proceso' => 'backup'));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
-    $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR']
-    );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/backup');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\n",$res);
-    $status = $data[0];
+    $metodo = 'backup';
+    $post_send = json_encode(array('proceso' => $metodo));
+    $headers = array();
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
     return  $data[12];
-    //return $res;
   }
-
-/********************************************************************************************************/
-/********************************************************************************************************/
 
   static public function updateRemoteUserFor($id_usuario){
     $sistemas = SysUsr::getSysOfUser($id_usuario);
@@ -234,96 +109,40 @@ class Usuarios extends Model
 
   static public function updateRemoteUser($id_usuario, $id_sistema){
 
-    $keys = Sistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
     $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
     $cat_status = SysUsr::getCatStatusOfUserSys($id_usuario, $id_sistema);
-
-    $post_send = json_encode(array('proceso' => 'updateuser', 'userdata' => $user_data));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
+    $metodo = 'updateuser';
+    $post_send = json_encode(array('proceso' => $metodo, 'userdata' => $user_data));
     $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
        'userdata:'.$user_data,
        'idrol:'.$id_rol,
        'catstatus:'.$cat_status
     );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/updateuser');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
     $rest = substr($data[10], -1, 1);
     $valid = ($rest >= 1)?true:false;
     return $valid;
   }
-
-/********************************************************************************************************/
-/********************************************************************************************************/
 
   static public function setRemoteUser($id_usuario, $id_sistema){
 
-    $keys = Sistemas::systemKey($id_sistema);
-
-    foreach ($keys as $key)
-    {
-        $app_secret =  $key->system_key;
-        $app_name =  $key->nombre;
-        $app_url =  $key->url;
-    }
-
     $user_data = json_encode(Usuarios::datos_usuario($id_usuario));
     $id_rol = SysUsr::getRolOfUserSys($id_usuario, $id_sistema);
-
-    $post_send = json_encode(array('proceso' => 'syncuser', 'userdata' => $user_data));
-    $sign = hash_hmac('sha256', $post_send, $app_secret, false);
-
+    $metodo = 'syncuser';
+    $post_send = json_encode(array('proceso' => $metodo, 'userdata' => $user_data));
     $headers = array(
-       'systemverify-Signature:'.$sign,
-       'system:'.$app_name,
-       'system-id:'.$id_sistema,
-       'ip:'.$_SERVER['REMOTE_ADDR'],
        'userdata:'.$user_data,
        'idrol:'.$id_rol
     );
-
-    $curl = null;
-    $curl = curl_init($app_url.'webhook/syncuser');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-
-    $res = curl_exec($curl);
-    $data = explode("\r\n",$res);
-    $status = $data[0];
+    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
     $rest = substr($data[10], -1, 1);
     $valid = ($rest >= 1)?true:false;
     return $valid;
   }
-  /********************************************************************************************************/
-  /********************************************************************************************************/
+
+/********************************************************************************************************/
+/********************************************************************************************************/
 
     static function getSysOfUser($id_usuario){
         $sistemas = SysUsr::getSysOfUser($id_usuario);
