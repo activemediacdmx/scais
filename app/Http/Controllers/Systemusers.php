@@ -75,7 +75,7 @@ class Systemusers extends Controller
   {
       $usuario = Usuarios::datos_usuario($user_id);
       $id_rol = Systemroles::getIdRol($user_id, $id_sistema);
-      $roles = Systemroles::selectRolesSystemByTipo('8,6',$_SESSION['id_rol'],$id_sistema,$id_rol);
+      $roles = Systemroles::selectRolesSystemByTipo('6,7,8',$_SESSION['id_rol'],$id_sistema,$id_rol);
       $datos = [
           'usuario' => $usuario,
           'roles' => $roles,
