@@ -29,10 +29,24 @@
 													<label for="descripcion">Descripción</label>
 													<textarea id="descripcion" name="descripcion" type="text" class="form-control"  placeholder="Descripción"></textarea>
 												  </div>
+                          <div class="m-form__group form-group row">
+                              <label class="col-9 col-form-label" for="set_auditable">
+                                Auditar la actividad de este permiso
+                              </label>
+                              <div class="col-3">
+                                <span class="m-switch m-switch--outline m-switch--icon m-switch--info">
+                                  <label>
+                                    <input id="set_auditable" name="set_auditable" type="checkbox" checked   value="">
+                                    <span></span>
+                                  </label>
+                                </span>
+                              </div>
+                          </div>
 											</div>
 										</div>
 									</div>
 								</div>
+                <input type="hidden" id="auditable" name="auditable" value="19">
 							</form>
             </div>
 						<div class="modal-footer">

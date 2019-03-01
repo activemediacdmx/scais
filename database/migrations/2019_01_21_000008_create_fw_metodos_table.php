@@ -29,16 +29,23 @@ class CreateFwMetodosTable extends Migration
             $table->string('metodo')->nullable()->default(null);
             $table->string('nombre')->nullable()->default(null);
             $table->longText('descripcion')->nullable()->default(null);
+            $table->unsignedInteger('auditable')->nullable()->default(null);
             $table->integer('user_alta')->nullable()->default(null);
             $table->integer('user_mod')->nullable()->default(null);
             $table->dateTime('fecha_alta')->nullable()->default(null);
             $table->dateTime('fecha_mod')->nullable()->default(null);
 
             $table->index(["id_sistema"], 'fk_fw_metodos_sistemas_1');
+            $table->index(["auditable"], 'fk_fw_metodos_cm_catalogo_1');
 
 
             $table->foreign('id_sistema', 'fk_fw_metodos_sistemas_1')
                 ->references('id_sistema')->on('sistemas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+
+            $table->foreign('auditable', 'fk_fw_metodos_cm_catalogo_1')
+                ->references('id_cat')->on('cm_catalogo')
                 ->onDelete('restrict')
                 ->onUpdate('restrict');
         });

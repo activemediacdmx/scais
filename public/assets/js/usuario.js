@@ -176,9 +176,9 @@ function alerta_div(id_div,error_head,error_content){
 
 ﻿$("body").on("click", "#chk_change_pass", function() {
 	if($("#chk_change_pass").is(':checked')) {
-		$('#change_pass').get(0).value = "132";
+		$('#change_pass').get(0).value = "10";
 	} else {
-		$('#change_pass').get(0).value = "133";
+		$('#change_pass').get(0).value = "11";
 	}
 });
 

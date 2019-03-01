@@ -29,11 +29,28 @@
 													<label for="descripcion">Descripción</label>
 													<textarea id="descripcion" name="descripcion" type="text" class="form-control"  placeholder="Descripción"><?php echo $modelo->descripcion; ?></textarea>
 												  </div>
+                          <?php
+                          if(($modelo->auditable)==19){$auditable = "checked";}else{$auditable = "";}
+                          ?>
+                          <div class="m-form__group form-group row">
+                              <label class="col-9 col-form-label" for="set_auditable">
+                                Auditar la actividad de este permiso
+                              </label>
+                              <div class="col-3">
+                                <span class="m-switch m-switch--outline m-switch--icon m-switch--info">
+                                  <label>
+                                    <input id="set_auditable" name="set_auditable" type="checkbox" <?php echo $auditable; ?>   value="">
+                                    <span></span>
+                                  </label>
+                                </span>
+                              </div>
+                          </div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<input id="id_metodo" name="id_metodo" type="hidden" value="<?php echo $modelo->id_metodo; ?>">
+                <input type="hidden" id="auditable" name="auditable" value="<?php echo $modelo->auditable; ?>">
 							</form>
             </div>
 						<div class="modal-footer">

@@ -117,3 +117,11 @@ $("body").on("click", "#cntr_js_fn_05", function() {
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CNTR-05');}
 		});
 });
+
+$("body").on("click", "#set_auditable", function() {
+	if($("#set_auditable").is(':checked')) {
+		$('#auditable').get(0).value = "19";
+	} else {
+		$('#auditable').get(0).value = "20";
+	}
+});
