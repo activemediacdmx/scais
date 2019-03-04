@@ -33,12 +33,8 @@ class Webhook extends Controller
   		if($webhook_signature == $expected_signature) {
 
           $data = json_decode($body);
-          $loginData = Login::logearClienteRemoto($data->usuario,$data->password,$remote_ip,$id_sistema);
-          $loginData = json_encode($loginData);
-
-        header($loginData);
-  			header("Status: 200 OK!");
-
+          echo Login::logearClienteRemoto($data->usuario,$data->password,$remote_ip,$id_sistema);
+          
   		} else {
   			header("Status: 401 Not authenticated".$app_secret);
   		}
