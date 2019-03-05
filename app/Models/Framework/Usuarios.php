@@ -43,13 +43,12 @@ class Usuarios extends Model
     $curl = null;
     $curl = curl_init($app_url.'webhook/' . $metodo);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $post_send);
-    $res = curl_exec($curl);
-    return explode("\r\n",$res);
+    return curl_exec($curl);
   }
 
   static public function setRemoteRol($id_rol, $id_sistema){
@@ -59,8 +58,7 @@ class Usuarios extends Model
     $post_send = json_encode(array('proceso' => $metodo, 'roldata' => $rol_data));
     $headers = array('roldata:'.$rol_data);
     $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    $rest = substr($data[10], -1, 1);
-    $valid = ($rest >= 1)?true:false;
+    $valid = ($data >= 1)?true:false;
     return $valid;
   }
 
@@ -70,8 +68,7 @@ class Usuarios extends Model
     $post_send = json_encode(array('proceso' => $metodo, 'metododata' => $datametodo));
     $headers = array('metododata:'.$datametodo);
     $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    $rest = substr($data[10], -1, 1);
-    $valid = ($rest >= 1)?true:false;
+    $valid = ($data >= 1)?true:false;
     return $valid;
   }
 
@@ -80,31 +77,21 @@ class Usuarios extends Model
     $rol_data = json_encode(Roles::getDataRol($id_rol));
     $post_send = json_encode(array('proceso' => 'updateroldata', 'roldata' => $rol_data));
     $headers = array('roldata:'.$rol_data);
-    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    return $data[10];
+    return self::startCurl( $metodo, $headers, $post_send, $id_sistema);
   }
 
   static public function populateRemote($id_sistema, $ids_inserts){
     $metodo = 'populate';
     $post_send = json_encode(array('ids_inserts' => $ids_inserts));
     $headers = array();
-    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    return  $data[15];
+    return self::startCurl( $metodo, $headers, $post_send, $id_sistema);
   }
 
   static public function getModelosRemotos($id_sistema){
     $metodo = 'backup';
     $post_send = json_encode(array('proceso' => $metodo));
     $headers = array();
-    $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    return  $data[12];
-  }
-
-  static public function updateRemoteUserFor($id_usuario){
-    $sistemas = SysUsr::getSysOfUser($id_usuario);
-    foreach ($sistemas as $sistema) {
-      self::updateRemoteUser($id_usuario, $sistema->id_sistema);
-    }
+    return self::startCurl( $metodo, $headers, $post_send, $id_sistema);
   }
 
   static public function updateRemoteUser($id_usuario, $id_sistema){
@@ -120,8 +107,7 @@ class Usuarios extends Model
        'catstatus:'.$cat_status
     );
     $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    $rest = substr($data[10], -1, 1);
-    $valid = ($rest >= 1)?true:false;
+    $valid = ($data >= 1)?true:false;
     return $valid;
   }
 
@@ -136,9 +122,15 @@ class Usuarios extends Model
        'idrol:'.$id_rol
     );
     $data = self::startCurl( $metodo, $headers, $post_send, $id_sistema);
-    $rest = substr($data[10], -1, 1);
-    $valid = ($rest >= 1)?true:false;
+    $valid = ($data >= 1)?true:false;
     return $valid;
+  }
+
+  static public function updateRemoteUserFor($id_usuario){
+    $sistemas = SysUsr::getSysOfUser($id_usuario);
+    foreach ($sistemas as $sistema) {
+      self::updateRemoteUser($id_usuario, $sistema->id_sistema);
+    }
   }
 
 /********************************************************************************************************/
